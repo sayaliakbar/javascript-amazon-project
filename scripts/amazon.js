@@ -57,7 +57,7 @@ document.querySelector(".js-products-grid").innerHTML = productList;
 
 document.querySelectorAll(".js-add-to-cart").forEach((button) => {
   button.addEventListener("click", () => {
-    const productId = button.dataset.productId;
+    const { productId } = button.dataset;
 
     let matchingItem;
 
