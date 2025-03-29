@@ -1,28 +1,34 @@
 import renderCheckoutHeader from "../checkout/checkoutHeader.js";
 import renderOrderSummary from "../checkout/orderSummary.js";
 
-export let cart = JSON.parse(localStorage.getItem("cart"));
+export let cart;
 
-if (!cart) {
-  cart = [
-    {
-      productId: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
-      quantity: 2,
-      deliveryOptionId: "1",
-    },
-    {
-      productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
-      quantity: 4,
-      deliveryOptionId: "2",
-    },
-  ];
+loadFromStorage();
+
+export function loadFromStorage() {
+  cart = JSON.parse(localStorage.getItem("cart"));
+
+  if (!cart) {
+    cart = [
+      {
+        productId: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
+        quantity: 2,
+        deliveryOptionId: "1",
+      },
+      {
+        productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
+        quantity: 4,
+        deliveryOptionId: "2",
+      },
+    ];
+  }
 }
 
 function saveToLocalStorage() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-export function addToCart(productId, addedToCartVar) {
+export function addToCart(productId) {
   let matchingcartItem;
 
   cart.forEach((cartItem) => {
@@ -37,24 +43,18 @@ export function addToCart(productId, addedToCartVar) {
       ).value
     );
   } else {
+    const itemsQuantity = Number(
+      document.querySelector(`.js-quantity-selector-${productId}`).value
+    );
     cart.push({
       productId,
-      quantity: Number(
-        document.querySelector(`.js-quantity-selector-${productId}`).value
-      ),
+      quantity: itemsQuantity ? itemsQuantity : 1,
       deliveryOptionId: "1",
     });
   }
   document
     .querySelector(`.js-added-to-cart-${productId}`)
     .classList.add("added-to-cart-visible");
-
-  clearTimeout(addedToCartVar);
-  addedToCartVar = setTimeout(() => {
-    document
-      .querySelector(`.js-added-to-cart-${productId}`)
-      .classList.remove("added-to-cart-visible");
-  }, 2000);
 
   saveToLocalStorage();
 }
