@@ -10,9 +10,10 @@ import { formatCurrency } from "../../utils/money.js";
 import {
   deliveryOptions,
   getDeliveryOption,
+  calculateDeliveryDate,
 } from "../../data/deliveryOptions.js";
 import renderPaymentSummary from "./paymentSummary.js";
-import formatDate from "../../utils/date.js";
+import renderCheckoutHeader from "./checkoutHeader.js";
 
 function renderOrderSummary() {
   let cartSummaryHTML = "";
@@ -23,7 +24,7 @@ function renderOrderSummary() {
     const matchingItem = getProduct(productId);
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-    const dateString = formatDate(deliveryOption);
+    const dateString = calculateDeliveryDate(deliveryOption);
 
     cartSummaryHTML += `<div class="cart-item-container js-cart-item-container-${
       matchingItem.id
@@ -82,7 +83,7 @@ function renderOrderSummary() {
   function deliveryOptionsHTML(matchingItem, cartItem) {
     let html = "";
     deliveryOptions.forEach((deliveryOption) => {
-      const dateString = formatDate(deliveryOption);
+      const dateString = calculateDeliveryDate(deliveryOption);
 
       let priceString =
         deliveryOption.priceCents === 0
@@ -122,6 +123,7 @@ function renderOrderSummary() {
 
       removeFromCart(productId);
       renderPaymentSummary();
+      renderCheckoutHeader();
       updateCartQuantity();
     });
   });
