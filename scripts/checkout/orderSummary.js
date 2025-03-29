@@ -11,9 +11,8 @@ import {
   deliveryOptions,
   getDeliveryOption,
 } from "../../data/deliveryOptions.js";
-import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 import renderPaymentSummary from "./paymentSummary.js";
-import getDate from "../../utils/date.js";
+import formatDate from "../../utils/date.js";
 
 function renderOrderSummary() {
   let cartSummaryHTML = "";
@@ -24,7 +23,7 @@ function renderOrderSummary() {
     const matchingItem = getProduct(productId);
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-    const dateString = getDate(deliveryOption);
+    const dateString = formatDate(deliveryOption);
 
     cartSummaryHTML += `<div class="cart-item-container js-cart-item-container-${
       matchingItem.id
@@ -83,7 +82,7 @@ function renderOrderSummary() {
   function deliveryOptionsHTML(matchingItem, cartItem) {
     let html = "";
     deliveryOptions.forEach((deliveryOption) => {
-      const dateString = getDate(deliveryOption);
+      const dateString = formatDate(deliveryOption);
 
       let priceString =
         deliveryOption.priceCents === 0
