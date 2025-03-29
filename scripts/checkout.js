@@ -13,8 +13,6 @@ import deliveryOptions from "../data/deliveryOptions.js";
 
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 
-const today = dayjs();
-
 let cartSummaryHTML = "";
 
 cart.forEach((cartItem) => {
@@ -28,11 +26,25 @@ cart.forEach((cartItem) => {
     }
   });
 
+  let deliveryOption;
+
+  deliveryOptions.forEach((option) => {
+    if (option.id === cartItem.deliveryOptionId) {
+      deliveryOption = option;
+    }
+  });
+
+  const today = dayjs();
+
+  const deliveryDate = today.add(deliveryOption.deliveryDays, "day");
+
+  const dateString = deliveryDate.format("dddd, MMMM D");
+
   cartSummaryHTML += `<div class="cart-item-container js-cart-item-container-${
     matchingItem.id
   }">
           <div class="delivery-date">
-            Delivery date: Tuesday, June 21
+            Delivery date: ${dateString}
           </div>
 
           <div class="cart-item-details-grid">
@@ -88,7 +100,7 @@ function deliveryOptionsHTML(matchingItem, cartItem) {
   deliveryOptions.forEach((deliveryOptions) => {
     const today = dayjs();
 
-    const deliveryDate = today.add(deliveryOptions.dileveryDays, "day");
+    const deliveryDate = today.add(deliveryOptions.deliveryDays, "day");
 
     const dateString = deliveryDate.format("dddd, MMMM D");
 
