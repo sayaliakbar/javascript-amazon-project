@@ -78,3 +78,56 @@ export function calculateCartQuantity() {
 
   return cartQuantity;
 }
+
+export function updateCartQuantity() {
+  const cartQuantity = calculateCartQuantity();
+
+  const checkoutCartQuantity = document.querySelector(
+    ".js-cart-items-quantity"
+  );
+
+  const amazonCartQuantity = document.querySelector(".js-cart-quantity");
+
+  if (checkoutCartQuantity) {
+    checkoutCartQuantity.innerText = cartQuantity
+      ? `${cartQuantity} items`
+      : "";
+  }
+
+  if (amazonCartQuantity) {
+    amazonCartQuantity.innerText = cartQuantity ? cartQuantity : "";
+  }
+}
+
+export function updateQuantity(productId, newQuantity) {
+  if (newQuantity >= 0 && newQuantity < 1000) {
+    if (newQuantity === 0) {
+      removeFromCart(productId);
+      updateCartQuantity();
+      return;
+    }
+
+    document.querySelector(`.js-quantity-label-${productId}`).innerText =
+      newQuantity;
+
+    cart.forEach((cartItem) => {
+      if (cartItem.productId === productId) {
+        cartItem.quantity = newQuantity;
+      }
+    });
+
+    document
+      .querySelector(`.js-cart-item-container-${productId}`)
+      .classList.remove("is-editing-quantity");
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartQuantity();
+
+    document
+      .querySelector(`.js-quantity-input-${productId}`)
+      .classList.remove("quantity-input-error");
+  } else {
+    document
+      .querySelector(`.js-quantity-input-${productId}`)
+      .classList.add("quantity-input-error");
+  }
+}
