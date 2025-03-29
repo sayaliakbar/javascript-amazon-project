@@ -1,3 +1,5 @@
+import renderOrderSummary from "../scripts/checkout/orderSummary.js";
+
 export let cart = JSON.parse(localStorage.getItem("cart"));
 
 if (!cart) {
@@ -67,7 +69,8 @@ export function removeFromCart(productId) {
 
   cart = newCart;
 
-  document.querySelector(`.js-cart-item-container-${productId}`).remove();
+  // document.querySelector(`.js-cart-item-container-${productId}`).remove();
+  renderOrderSummary();
 
   saveToLocalStorage();
 }
