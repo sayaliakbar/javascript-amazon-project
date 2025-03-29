@@ -130,4 +130,6 @@ export function updateQuantity(productId, newQuantity) {
       .querySelector(`.js-quantity-input-${productId}`)
       .classList.add("quantity-input-error");
   }
+
+  document.querySelector(`.js-quantity-input-${productId}`).value = "";
 }
