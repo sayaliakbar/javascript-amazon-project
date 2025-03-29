@@ -1,3 +1,4 @@
+import renderCheckoutHeader from "../scripts/checkout/checkoutHeader.js";
 import renderOrderSummary from "../scripts/checkout/orderSummary.js";
 
 export let cart = JSON.parse(localStorage.getItem("cart"));
@@ -86,17 +87,7 @@ export function calculateCartQuantity() {
 export function updateCartQuantity() {
   const cartQuantity = calculateCartQuantity();
 
-  const checkoutCartQuantity = document.querySelector(
-    ".js-cart-items-quantity"
-  );
-
   const amazonCartQuantity = document.querySelector(".js-cart-quantity");
-
-  if (checkoutCartQuantity) {
-    checkoutCartQuantity.innerText = cartQuantity
-      ? `${cartQuantity} items`
-      : "";
-  }
 
   if (amazonCartQuantity) {
     amazonCartQuantity.innerText = cartQuantity ? cartQuantity : "";
@@ -108,6 +99,7 @@ export function updateQuantity(productId, newQuantity) {
     if (newQuantity === 0) {
       removeFromCart(productId);
       updateCartQuantity();
+      renderCheckoutHeader();
       return;
     }
 
@@ -136,6 +128,7 @@ export function updateQuantity(productId, newQuantity) {
   }
 
   document.querySelector(`.js-quantity-input-${productId}`).value = "";
+  renderCheckoutHeader();
 }
 
 export function updateDeliveryOption(productId, deliveryOptionId) {
