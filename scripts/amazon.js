@@ -65,7 +65,16 @@ document.querySelectorAll(".js-add-to-cart").forEach((button) => {
   button.addEventListener("click", () => {
     const { productId } = button.dataset;
 
-    addToCart(productId, addedToCartVar);
+    addToCart(productId);
+
+    clearTimeout(addedToCartVar);
+
+    addedToCartVar = setTimeout(() => {
+      document
+        .querySelector(`.js-added-to-cart-${productId}`)
+        .classList.remove("added-to-cart-visible");
+    }, 2000);
+
     updateCartQuantity();
   });
 });
