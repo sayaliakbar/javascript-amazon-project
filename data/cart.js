@@ -136,3 +136,19 @@ export function updateQuantity(productId, newQuantity) {
 
   document.querySelector(`.js-quantity-input-${productId}`).value = "";
 }
+
+export function updateDeliveryOption(productId, deliveryOptionId) {
+  console.log(productId, deliveryOptionId);
+
+  let matchingcartItem;
+
+  cart.forEach((cartItem) => {
+    if (cartItem.productId === productId) {
+      matchingcartItem = cartItem;
+    }
+  });
+
+  matchingcartItem.deliveryOptionId = deliveryOptionId;
+
+  saveToLocalStorage();
+}
