@@ -69,9 +69,7 @@ export function removeFromCart(productId) {
 
   cart = newCart;
 
-  // document.querySelector(`.js-cart-item-container-${productId}`).remove();
   renderOrderSummary();
-
   saveToLocalStorage();
 }
 
