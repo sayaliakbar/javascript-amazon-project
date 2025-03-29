@@ -1,4 +1,9 @@
-import { calculateCartQuantity, cart, removeFromCart } from "../data/cart.js";
+import {
+  updateCartQuantity,
+  cart,
+  removeFromCart,
+  updateQuantity,
+} from "../data/cart.js";
 
 import { products } from "../data/products.js";
 
@@ -118,14 +123,6 @@ document.querySelectorAll(".js-delete-link").forEach((link) => {
   });
 });
 
-function updateCartQuantity() {
-  const cartQuantity = calculateCartQuantity();
-
-  document.querySelector(".js-cart-items-quantity").innerText = cartQuantity
-    ? `${cartQuantity} items`
-    : "";
-}
-
 updateCartQuantity();
 
 document.querySelectorAll(".js-update-quantity-link").forEach((link) => {
@@ -145,35 +142,7 @@ document.querySelectorAll(`.js-save-quantity-link`).forEach((link) => {
     const newQuantity = Number(
       document.querySelector(`.js-quantity-input-${productId}`).value
     );
-    if (newQuantity >= 0 && newQuantity < 1000) {
-      if (newQuantity === 0) {
-        removeFromCart(productId);
-        updateCartQuantity();
-        return;
-      }
 
-      document.querySelector(`.js-quantity-label-${productId}`).innerText =
-        newQuantity;
-
-      cart.forEach((cartItem) => {
-        if (cartItem.productId === productId) {
-          cartItem.quantity = newQuantity;
-        }
-      });
-
-      document
-        .querySelector(`.js-cart-item-container-${productId}`)
-        .classList.remove("is-editing-quantity");
-      localStorage.setItem("cart", JSON.stringify(cart));
-      updateCartQuantity();
-
-      document
-        .querySelector(`.js-quantity-input-${productId}`)
-        .classList.remove("quantity-input-error");
-    } else {
-      document
-        .querySelector(`.js-quantity-input-${productId}`)
-        .classList.add("quantity-input-error");
-    }
+    updateQuantity(productId, newQuantity);
   });
 });
