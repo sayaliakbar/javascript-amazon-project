@@ -138,8 +138,6 @@ export function updateQuantity(productId, newQuantity) {
 }
 
 export function updateDeliveryOption(productId, deliveryOptionId) {
-  console.log(productId, deliveryOptionId);
-
   let matchingcartItem;
 
   cart.forEach((cartItem) => {
