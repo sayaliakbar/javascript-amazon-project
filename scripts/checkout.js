@@ -52,7 +52,10 @@ cart.forEach((cartItem) => {
                 </span>
                 <input
                  class="quantity-input
-                 js-quantity-input-${matchingItem.id}" ">
+                 js-quantity-input
+                 js-quantity-input-${matchingItem.id}" data-product-id="${
+    matchingItem.id
+  }">
                 <span class="link-primary save-quantity-link js-save-quantity-link" data-product-id="${
                   matchingItem.id
                 }">Save</span>
@@ -145,4 +148,20 @@ document.querySelectorAll(`.js-save-quantity-link`).forEach((link) => {
 
     updateQuantity(productId, newQuantity);
   });
+});
+
+document.querySelectorAll(".js-quantity-input").forEach((input) => {
+  const { productId } = input.dataset;
+
+  document
+    .querySelector(`.js-quantity-input-${productId}`)
+    .addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        const newQuantity = Number(
+          document.querySelector(`.js-quantity-input-${productId}`).value
+        );
+
+        updateQuantity(productId, newQuantity);
+      }
+    });
 });
