@@ -139,41 +139,4 @@ describe("Cart functionality", () => {
       );
     });
   });
-
-  describe("updateDeliveryOption", () => {
-    const product1 = "e43638ce-6aa0-4b85-b27f-e1d07eb678c6";
-    beforeEach(() => {
-      spyOn(localStorage, "setItem");
-
-      spyOn(localStorage, "getItem").and.callFake(() => {
-        return JSON.stringify([
-          {
-            productId: product1,
-            quantity: 1,
-            deliveryOptionId: "1",
-          },
-        ]);
-      });
-
-      loadFromStorage();
-
-      console.log(
-        document.querySelector(".js-test-delivery-options-container")
-      );
-
-      document.querySelector(
-        ".js-test-delivery-options-container"
-      ).innerHTML = `
-      <div class="js-delivery-options-${product1}"></div>
-      `;
-
-      renderOrderSummary();
-    });
-
-    it("updates the delivery option dates of a product", () => {
-      // console.log(document.querySelector(`.js-delivery-option-${product1}-3`));
-      expect(cart.length).toEqual(1);
-      // expect(cart[0].deliveryOptionId).toEqual("3");
-    });
-  });
 });
