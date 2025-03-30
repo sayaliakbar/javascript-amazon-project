@@ -101,5 +101,26 @@ describe("Order summary functionality", () => {
         "4"
       );
     });
+
+    it("updates the delivery option dates of a product", () => {
+      document.querySelector(`.js-delivery-option-${product1}-3`).click();
+
+      expect(
+        document.querySelector(`.js-delivery-option-input-${product1}-3`)
+          .checked
+      ).toEqual(true);
+
+      expect(cart.length).toEqual(2);
+      expect(cart[0].productId).toEqual(product1);
+      expect(cart[0].deliveryOptionId).toEqual("3");
+
+      expect(
+        document.querySelector(".js-payment-summary-money-shipping").innerText
+      ).toContain("$14.98");
+
+      expect(
+        document.querySelector(".js-payment-summary-money-total").innerText
+      ).toContain("$132.64");
+    });
   });
 });
