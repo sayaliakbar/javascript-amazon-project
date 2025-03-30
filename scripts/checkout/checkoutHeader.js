@@ -8,7 +8,13 @@ function renderCheckoutHeader() {
 
   const html = `Checkout (<a class="return-to-home-link js-cart-items-quantity" href="amazon.html">${cartItems} items</a>)`;
 
-  document.querySelector(".js-checkout-header-middle-section").innerHTML = html;
+  const headerItemCountElement = document.querySelector(
+    ".js-checkout-header-middle-section"
+  );
+
+  if (headerItemCountElement) {
+    headerItemCountElement.innerHTML = html;
+  }
 }
 
 export default renderCheckoutHeader;
