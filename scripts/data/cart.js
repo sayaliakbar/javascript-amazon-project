@@ -1,5 +1,6 @@
 import renderCheckoutHeader from "../checkout/checkoutHeader.js";
 import renderOrderSummary from "../checkout/orderSummary.js";
+import { deliveryOptions } from "./deliveryOptions.js";
 
 export let cart;
 
@@ -140,6 +141,7 @@ export function updateQuantity(productId, newQuantity) {
 
 export function updateDeliveryOption(productId, deliveryOptionId) {
   let matchingcartItem;
+  let isOptionId = false;
 
   cart.forEach((cartItem) => {
     if (cartItem.productId === productId) {
@@ -147,7 +149,17 @@ export function updateDeliveryOption(productId, deliveryOptionId) {
     }
   });
 
-  matchingcartItem.deliveryOptionId = deliveryOptionId;
+  deliveryOptions.forEach((option) => {
+    if (option.id === deliveryOptionId) {
+      isOptionId = true;
+    }
+  });
+
+  if (matchingcartItem && isOptionId) {
+    matchingcartItem.deliveryOptionId = deliveryOptionId;
+  } else {
+    return;
+  }
 
   saveToLocalStorage();
 }
