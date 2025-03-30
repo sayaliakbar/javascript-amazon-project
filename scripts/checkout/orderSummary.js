@@ -15,18 +15,17 @@ import {
 import renderPaymentSummary from "./paymentSummary.js";
 import renderCheckoutHeader from "./checkoutHeader.js";
 
-function renderOrderSummary() {
+export function renderOrderSummary() {
   let cartSummaryHTML = "";
 
   cart.forEach((cartItem) => {
-    const { productId } = cartItem;
-    const { deliveryOptionId } = cartItem;
+    const { productId, deliveryOptionId } = cartItem;
     const matchingItem = getProduct(productId);
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
     const dateString = calculateDeliveryDate(deliveryOption);
 
-    cartSummaryHTML += `<div class="cart-item-container js-cart-item-container-${
+    cartSummaryHTML += `<div class="cart-item-container js-cart-item-container js-cart-item-container-${
       matchingItem.id
     }">
           <div class="delivery-date">
@@ -42,7 +41,9 @@ function renderOrderSummary() {
               <div class="product-price">
                 $${formatCurrency(matchingItem.priceCents)}
               </div>
-              <div class="product-quantity">
+              <div class="product-quantity js-product-quantity-${
+                matchingItem.id
+              }">
                 <span>
                   Quantity: <span class="quantity-label js-quantity-label-${
                     matchingItem.id
@@ -62,9 +63,9 @@ function renderOrderSummary() {
                 <span class="link-primary save-quantity-link js-save-quantity-link" data-product-id="${
                   matchingItem.id
                 }">Save</span>
-                <span class="delete-quantity-link link-primary js-delete-link"data-product-id="${
-                  matchingItem.id
-                }">
+                <span class="delete-quantity-link link-primary js-delete-link 
+                js-delete-link-${matchingItem.id}" 
+                data-product-id="${matchingItem.id}">
                   Delete
                 </span>
               </div>
@@ -115,12 +116,15 @@ function renderOrderSummary() {
     return html;
   }
 
-  document.querySelector(".order-summary").innerHTML = cartSummaryHTML;
+  const orderSummaryContainer = document.querySelector(".js-order-summary");
+
+  if (orderSummaryContainer) {
+    orderSummaryContainer.innerHTML = cartSummaryHTML;
+  }
 
   document.querySelectorAll(".js-delete-link").forEach((link) => {
     link.addEventListener("click", () => {
       const { productId } = link.dataset;
-
       removeFromCart(productId);
       renderPaymentSummary();
       renderCheckoutHeader();
