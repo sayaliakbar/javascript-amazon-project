@@ -4,15 +4,15 @@ import { deliveryOptions } from "./deliveryOptions.js";
 
 class Cart {
   cartItems;
-  localStorageKey;
+  #localStorageKey;
 
   constructor(localStorageKey) {
-    this.localStorageKey = localStorageKey;
-    this.loadFromStorage();
+    this.#localStorageKey = localStorageKey;
+    this.#loadFromStorage();
   }
 
-  loadFromStorage() {
-    this.cartItems = JSON.parse(localStorage.getItem(this.localStorageKey));
+  #loadFromStorage() {
+    this.cartItems = JSON.parse(localStorage.getItem(this.#localStorageKey));
 
     if (!this.cartItems) {
       this.cartItems = [
@@ -32,7 +32,7 @@ class Cart {
   }
 
   saveToLocalStorage() {
-    localStorage.setItem(this.localStorageKey, JSON.stringify(this.cartItems));
+    localStorage.setItem(this.#localStorageKey, JSON.stringify(this.cartItems));
   }
 
   addToCart(productId) {
@@ -128,7 +128,7 @@ class Cart {
         .querySelector(`.js-cart-item-container-${productId}`)
         .classList.remove("is-editing-quantity");
       localStorage.setItem(
-        this.localStorageKey,
+        this.#localStorageKey,
         JSON.stringify(this.cartItems)
       );
       this.updateCartQuantity();
@@ -173,9 +173,7 @@ class Cart {
 }
 
 let cart = new Cart("cart-oop");
-
 let businessCart = new Cart("cart-business");
 
 console.log(cart);
-
 console.log(businessCart);
