@@ -1,13 +1,27 @@
-export function getProduct(productId) {
-  let matchingItem;
+import { formatCurrency } from "../../utils/money.js";
 
-  products.forEach((product) => {
-    if (productId === product.id) {
-      matchingItem = product;
-    }
-  });
+class Product {
+  id;
+  image;
+  name;
+  rating;
+  priceCents;
 
-  return matchingItem;
+  constructor(productDetails) {
+    this.id = productDetails.id;
+    this.image = productDetails.image;
+    this.name = productDetails.name;
+    this.rating = productDetails.rating;
+    this.priceCents = productDetails.priceCents;
+  }
+
+  getPrice() {
+    return ` $${formatCurrency(this.priceCents)}`;
+  }
+
+  getStarsUrl() {
+    return `images/ratings/rating-${this.rating.stars * 10}.png`;
+  }
 }
 
 export const products = [
@@ -514,4 +528,20 @@ export const products = [
     priceCents: 1405,
     keywords: ["github", "tech", "profile", "premium"],
   },
-];
+].map((productDetails) => {
+  return new Product(productDetails);
+});
+
+console.log(products);
+
+export function getProduct(productId) {
+  let matchingItem;
+
+  products.forEach((product) => {
+    if (productId === product.id) {
+      matchingItem = product;
+    }
+  });
+
+  return matchingItem;
+}
