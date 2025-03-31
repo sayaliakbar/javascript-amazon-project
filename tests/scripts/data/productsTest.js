@@ -100,7 +100,7 @@ describe("Products functionality", () => {
       expect(product.keywords).toEqual(undefined);
       expect(product instanceof Product).toEqual(true);
     });
-    it("getPrice()", () => {
+    it("gets price of the object", () => {
       const product = new Product(product1);
       expect(product.getPrice()).toEqual("$10.90");
 
@@ -113,7 +113,7 @@ describe("Products functionality", () => {
       product.priceCents = undefined;
       expect(product.getPrice()).toEqual("$NaN");
     });
-    it("getStarsUrl()", () => {
+    it("gets stars url", () => {
       const product = new Product(product1);
 
       expect(product.getStarsUrl()).toEqual("images/ratings/rating-45.png");
@@ -137,7 +137,7 @@ describe("Products functionality", () => {
       expect(typeof product).toEqual("object");
     });
 
-    it("extraInfoHtTML()", () => {
+    it("extraInfoHtTML gets the size chart of the clothing product and displays", () => {
       const product = new Clothing(product2);
 
       expect(product.extraInfoHTML()).toContain(
@@ -162,11 +162,12 @@ describe("Products functionality", () => {
       expect(typeof product).toEqual("object");
     });
 
-    it("extraInfoHtTML()", () => {
-      const product = new Clothing(product2);
+    it("extraInfoHtTML gets the instructions and warrantly link of the appliance product", () => {
+      const product = new Appliance(product3);
 
       expect(product.extraInfoHTML()).toContain(
-        `<a href=images/clothing-size-chart.png target="_blank">Size Chart</a>`
+        `<a href=images/appliance-instructions.png target="_blank">Instructions</a>
+    <a href=images/appliance-warranty.png target="_blank">Warranty</a>`
       );
     });
   });
