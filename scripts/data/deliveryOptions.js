@@ -29,9 +29,9 @@ export function getDeliveryOption(deliveryOptionId) {
   return deliveryOption || deliveryOptions[0];
 }
 
-export function calculateDeliveryDate(deliveryOption) {
+export function calculateDeliveryDate(deliveryOption, today = dayjs()) {
   // Get the current date - this should use our mock in tests
-  const today = dayjs();
+  // today parameter now replaces the direct dayjs() call
 
   // Add the delivery days to get the initial delivery date
   const daysToAdd = deliveryOption.deliveryDays;
@@ -42,17 +42,9 @@ export function calculateDeliveryDate(deliveryOption) {
   if (dayOfWeek === "Saturday") {
     // Skip to Monday (add 2 days)
     deliveryDate = deliveryDate.add(2, "day");
-    console.log(
-      "Calculate function - adjusted from Saturday:",
-      deliveryDate.format("YYYY-MM-DD")
-    );
   } else if (dayOfWeek === "Sunday") {
     // Skip to Monday (add 1 day)
     deliveryDate = deliveryDate.add(1, "day");
-    console.log(
-      "Calculate function - adjusted from Sunday:",
-      deliveryDate.format("YYYY-MM-DD")
-    );
   }
 
   // Format and return the final date
