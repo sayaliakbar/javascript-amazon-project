@@ -1,10 +1,4 @@
-import {
-  updateCartQuantity,
-  cart,
-  removeFromCart,
-  updateQuantity,
-  updateDeliveryOption,
-} from "../data/cart.js";
+import { cart } from "../data/cart-class.js";
 import { getProduct } from "../data/products.js";
 import { formatCurrency } from "../../utils/money.js";
 import {
@@ -18,7 +12,7 @@ import renderCheckoutHeader from "./checkoutHeader.js";
 export function renderOrderSummary() {
   let cartSummaryHTML = "";
 
-  cart.forEach((cartItem) => {
+  cart.cartItems.forEach((cartItem) => {
     const { productId, deliveryOptionId } = cartItem;
     const matchingItem = getProduct(productId);
     const deliveryOption = getDeliveryOption(deliveryOptionId);
@@ -132,14 +126,14 @@ export function renderOrderSummary() {
   document.querySelectorAll(".js-delete-link").forEach((link) => {
     link.addEventListener("click", () => {
       const { productId } = link.dataset;
-      removeFromCart(productId);
+      cart.removeFromCart(productId);
       renderPaymentSummary();
       renderCheckoutHeader();
-      updateCartQuantity();
+      cart.updateCartQuantity();
     });
   });
 
-  updateCartQuantity();
+  cart.updateCartQuantity();
 
   document.querySelectorAll(".js-update-quantity-link").forEach((link) => {
     link.addEventListener("click", () => {
@@ -159,7 +153,7 @@ export function renderOrderSummary() {
         document.querySelector(`.js-quantity-input-${productId}`).value
       );
 
-      updateQuantity(productId, newQuantity);
+      cart.updateQuantity(productId, newQuantity);
       renderPaymentSummary();
     });
   });
@@ -175,7 +169,7 @@ export function renderOrderSummary() {
             document.querySelector(`.js-quantity-input-${productId}`).value
           );
 
-          updateQuantity(productId, newQuantity);
+          cart.updateQuantity(productId, newQuantity);
         }
       });
   });
@@ -183,7 +177,7 @@ export function renderOrderSummary() {
   document.querySelectorAll(".js-delivery-option").forEach((element) => {
     element.addEventListener("click", () => {
       const { productId, deliveryOptionId } = element.dataset;
-      updateDeliveryOption(productId, deliveryOptionId);
+      cart.updateDeliveryOption(productId, deliveryOptionId);
       renderOrderSummary();
       renderPaymentSummary();
     });
