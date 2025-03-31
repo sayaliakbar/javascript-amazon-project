@@ -1,4 +1,4 @@
-import { addToCart, updateCartQuantity } from "./data/cart-class.js";
+import { cart } from "./data/cart-class.js";
 import { products } from "./data/products.js";
 
 let productList = "";
@@ -63,7 +63,7 @@ document.querySelectorAll(".js-add-to-cart").forEach((button) => {
   button.addEventListener("click", () => {
     const { productId } = button.dataset;
 
-    addToCart(productId);
+    cart.addToCart(productId);
 
     clearTimeout(addedToCartVar);
 
@@ -73,8 +73,8 @@ document.querySelectorAll(".js-add-to-cart").forEach((button) => {
         .classList.remove("added-to-cart-visible");
     }, 2000);
 
-    updateCartQuantity();
+    cart.updateCartQuantity();
   });
 });
 
-updateCartQuantity();
+cart.updateCartQuantity();
