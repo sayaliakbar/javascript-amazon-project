@@ -20,6 +20,10 @@ export class Product {
   }
 
   getStarsUrl() {
+    // Add proper error handling to match test expectations
+    if (!this.rating || this.rating.stars === undefined) {
+      throw new TypeError("Rating stars property is missing");
+    }
     return `images/ratings/rating-${this.rating.stars * 10}.png`;
   }
 
