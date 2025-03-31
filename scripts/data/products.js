@@ -1,6 +1,6 @@
 import { formatCurrency } from "../../utils/money.js";
 
-class Product {
+export class Product {
   id;
   image;
   name;
@@ -16,7 +16,7 @@ class Product {
   }
 
   getPrice() {
-    return ` $${formatCurrency(this.priceCents)}`;
+    return `$${formatCurrency(this.priceCents)}`;
   }
 
   getStarsUrl() {
@@ -24,11 +24,11 @@ class Product {
   }
 
   extraInfoHTML() {
-    return "";
+    return " ";
   }
 }
 
-class Clothing extends Product {
+export class Clothing extends Product {
   sizeChartLink;
 
   constructor(productDetails) {
@@ -42,7 +42,7 @@ class Clothing extends Product {
   }
 }
 
-class Appliance extends Product {
+export class Appliance extends Product {
   instructionsLink;
   warrantyLink;
 
