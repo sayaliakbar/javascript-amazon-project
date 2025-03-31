@@ -4,6 +4,7 @@ import {
   calculateDeliveryDate,
 } from "../../../scripts/data/deliveryOptions.js";
 // Import test framework and mocking utilities
+import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 
 describe("Delivery Options Data", () => {
   it("should contain exactly 3 delivery options", () => {
@@ -87,25 +88,118 @@ describe("getDeliveryOption Function", () => {
 
   it("should return the first option when given no ID", () => {
     // Test logic here
+    const undefinedOption = getDeliveryOption();
+    const nullOption = getDeliveryOption(null);
+    const emptyOption = getDeliveryOption("");
+    const defaultOption = getDeliveryOption("1");
+
+    expect(undefinedOption).toBeDefined();
+    expect(undefinedOption).toEqual(defaultOption);
+    expect(undefinedOption.id).toBe("1");
+
+    expect(nullOption).toBeDefined();
+    expect(nullOption).toEqual(defaultOption);
+
+    expect(emptyOption).toBeDefined();
+    expect(emptyOption).toEqual(defaultOption);
   });
 });
 
 describe("calculateDeliveryDate Function", () => {
   // Setup for date mocking would go here
+  // Setup and teardown hooks
+  let today;
+
+  beforeEach(() => {
+    // Mock the current date to be consistent for tests
+    today = dayjs();
+  });
 
   it("should add the correct number of delivery days to the current date", () => {
     // Test logic here
+    // Test for each delivery option
+    const option1 = deliveryOptions[0];
+    const option2 = deliveryOptions[1];
+    const option3 = deliveryOptions[2];
+
+    // Calculate delivery dates for each option
+    const date1 = calculateDeliveryDate(option1);
+    const date2 = calculateDeliveryDate(option2);
+    const date3 = calculateDeliveryDate(option3);
+
+    // Verify each date is correctly calculated
+    const expectedDate1 = today
+      .add(option1.deliveryDays, "day")
+      .format("dddd, MMMM D");
+    const expectedDate2 = today
+      .add(option2.deliveryDays, "day")
+      .format("dddd, MMMM D");
+    const expectedDate3 = today
+      .add(option3.deliveryDays, "day")
+      .format("dddd, MMMM D");
+
+    expect(date1).toBe(expectedDate1);
+    expect(date2).toBe(expectedDate2);
+    expect(date3).toBe(expectedDate3);
   });
 
   it("should adjust delivery dates that fall on Saturday (adding 2 days)", () => {
     // Test logic here with mocked date falling on Saturday
+    // Create an option that would deliver on Saturday
+    const mockDay = dayjs().day(3); // Start with Wednesday
+    const deliveryDays = 3; // This would land on Saturday
+    const mockOption = { deliveryDays, priceCents: 499 };
+
+    // Instead of mocking window.dayjs, pass the mockDay directly
+    const deliveryDate = calculateDeliveryDate(mockOption, mockDay);
+
+    // Should be Monday (Wednesday + 3 days + 2 weekend days)
+    const expectedDate = mockDay
+      .add(deliveryDays + 2, "day")
+      .format("dddd, MMMM D");
+    expect(deliveryDate).toBe(expectedDate);
   });
 
   it("should adjust delivery dates that fall on Sunday (adding 1 day)", () => {
     // Test logic here with mocked date falling on Sunday
+    // Create an option that would deliver on Sunday
+    const mockDay = dayjs().day(4); // Start with Thursday
+    const deliveryDays = 3; // This would land on Sunday
+    const mockOption = { deliveryDays, priceCents: 499 };
+
+    // Pass the mock day to calculate delivery date
+    const deliveryDate = calculateDeliveryDate(mockOption, mockDay);
+
+    // Should be Monday (Thursday + 3 days + 1 weekend day)
+    const expectedDate = mockDay
+      .add(deliveryDays + 1, "day")
+      .format("dddd, MMMM D");
+    expect(deliveryDate).toBe(expectedDate);
   });
 
   it("should format the returned date correctly", () => {
     // Test logic here verifying format is "dddd, MMMM D"
+    // Test with different dates to ensure consistent formatting
+    const testDates = [
+      dayjs("2023-01-01"), // January
+      dayjs("2023-06-15"), // June
+      dayjs("2023-12-25"), // December
+    ];
+
+    for (const testDate of testDates) {
+      // Use a simple delivery option
+      const option = { deliveryDays: 2, priceCents: 0 };
+
+      // Calculate delivery date using our test date
+      const deliveryDate = calculateDeliveryDate(option, testDate);
+
+      // Check format matches "dddd, MMMM D" (day of week, month name, day)
+      expect(deliveryDate).toMatch(/^[A-Z][a-z]+, [A-Z][a-z]+ \d{1,2}$/);
+
+      // Verify the format without checking the exact date
+      // This just confirms the date is formatted properly
+      expect(deliveryDate.split(" ").length).toBe(3);
+      expect(deliveryDate.includes(",")).toBe(true);
+    }
   });
 });
