@@ -26,21 +26,37 @@ export function getDeliveryOption(deliveryOptionId) {
     }
   });
 
-  return deliveryOption || deliveryOption[0];
+  return deliveryOption || deliveryOptions[0];
 }
 
 export function calculateDeliveryDate(deliveryOption) {
+  // Get the current date - this should use our mock in tests
   const today = dayjs();
 
-  let deliveryDate = today.add(deliveryOption.deliveryDays, "day");
+  // Add the delivery days to get the initial delivery date
+  const daysToAdd = deliveryOption.deliveryDays;
+  let deliveryDate = today.add(daysToAdd, "day");
 
-  if (deliveryDate.format("dddd") === "Saturday") {
-    deliveryDate = today.add(deliveryOption.deliveryDays + 2, "day");
-  } else if (deliveryDate.format("dddd") === "Sunday") {
-    deliveryDate = today.add(deliveryOption.deliveryDays + 1, "day");
+  // Adjust for weekends
+  const dayOfWeek = deliveryDate.format("dddd");
+  if (dayOfWeek === "Saturday") {
+    // Skip to Monday (add 2 days)
+    deliveryDate = deliveryDate.add(2, "day");
+    console.log(
+      "Calculate function - adjusted from Saturday:",
+      deliveryDate.format("YYYY-MM-DD")
+    );
+  } else if (dayOfWeek === "Sunday") {
+    // Skip to Monday (add 1 day)
+    deliveryDate = deliveryDate.add(1, "day");
+    console.log(
+      "Calculate function - adjusted from Sunday:",
+      deliveryDate.format("YYYY-MM-DD")
+    );
   }
 
-  const dateString = deliveryDate.format("dddd, MMMM D");
+  // Format and return the final date
+  const result = deliveryDate.format("dddd, MMMM D");
 
-  return dateString;
+  return result;
 }
