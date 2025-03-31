@@ -2,7 +2,7 @@ import renderCheckoutHeader from "../checkout/checkoutHeader.js";
 import renderOrderSummary from "../checkout/orderSummary.js";
 import { deliveryOptions } from "./deliveryOptions.js";
 
-class Cart {
+export class Cart {
   cartItems;
   #localStorageKey;
 
