@@ -32,7 +32,6 @@ export function getDeliveryOption(deliveryOptionId) {
 export function calculateDeliveryDate(deliveryOption, today = dayjs()) {
   // Get the current date - this should use our mock in tests
   // today parameter now replaces the direct dayjs() call
-
   // Add the delivery days to get the initial delivery date
   const daysToAdd = deliveryOption.deliveryDays;
   let deliveryDate = today.add(daysToAdd, "day");
