@@ -1,4 +1,4 @@
-import { addToCart, updateCartQuantity } from "./data/cart.js";
+import { addToCart, updateCartQuantity } from "./data/cart-class.js";
 import { products } from "./data/products.js";
 
 let productList = "";
