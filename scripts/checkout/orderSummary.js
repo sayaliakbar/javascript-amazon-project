@@ -16,7 +16,6 @@ export function renderOrderSummary() {
     const { productId, deliveryOptionId } = cartItem;
     const matchingItem = getProduct(productId);
     const deliveryOption = getDeliveryOption(deliveryOptionId);
-
     const dateString = calculateDeliveryDate(deliveryOption);
 
     cartSummaryHTML += `<div class="cart-item-container js-cart-item-container js-cart-item-container-${
