@@ -4,6 +4,8 @@ import { formatCurrency } from "../../utils/money.js";
 
 import { getDeliveryOption } from "../data/deliveryOptions.js";
 
+import { orders } from "../data/orders.js";
+
 function renderPaymentSummary() {
   let productPriceCents = 0;
   let shippingPriceCents = 0;
@@ -62,12 +64,21 @@ function renderPaymentSummary() {
           )}</div>
         </div>
 
-        <button class="place-order-button button-primary">
+        <button class="place-order-button js-place-order-button button-primary">
           Place your order
         </button>
       </div>`;
 
   document.querySelector(".js-payment-summary").innerHTML = paymentSummaryHTML;
+
+  document
+    .querySelector(".js-place-order-button")
+    .addEventListener("click", () => {
+      if (cart.cartItems.length > 0) {
+        orders.createOrderFromCart(cart, totalCents);
+        window.location.href = "orders.html";
+      }
+    });
 }
 
 export default renderPaymentSummary;
