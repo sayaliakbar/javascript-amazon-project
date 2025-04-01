@@ -4,6 +4,8 @@ import { cart } from "../../../scripts/data/cart-class.js";
 describe("Checkout header functionality", () => {
   describe("renderCheckoutHeader", () => {
     beforeEach(() => {
+      spyOn(localStorage, "setItem");
+
       // Setup DOM structure needed for the test
       document.querySelector(".js-test-checkout-container").innerHTML = `
         <div class="js-checkout-header-middle-section"></div>
