@@ -176,6 +176,12 @@ export class Cart {
 
     this.saveToLocalStorage();
   }
+  cleanCart() {
+    this.cartItems = [];
+
+    renderOrderSummary();
+    this.saveToLocalStorage();
+  }
 }
 
 export let cart = new Cart("cart");
