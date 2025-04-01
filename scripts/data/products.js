@@ -11,7 +11,10 @@ export class Product {
     this.id = productDetails.id;
     this.image = productDetails.image;
     this.name = productDetails.name;
-    this.rating = productDetails.rating;
+    // Create a deep copy of the rating object instead of copying the reference
+    this.rating = productDetails.rating
+      ? { ...productDetails.rating }
+      : undefined;
     this.priceCents = productDetails.priceCents;
   }
 
