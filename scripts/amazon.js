@@ -1,6 +1,8 @@
 import { cart } from "./data/cart-class.js";
 import { products } from "./data/products.js";
 
+import "./navbar.js";
+
 let productList = "";
 
 products.forEach((product) => {
