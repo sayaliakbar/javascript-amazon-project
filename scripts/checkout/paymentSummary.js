@@ -76,6 +76,7 @@ function renderPaymentSummary() {
     .addEventListener("click", () => {
       if (cart.cartItems.length > 0) {
         orders.createOrderFromCart(cart, totalCents);
+        cart.cleanCart();
         window.location.href = "orders.html";
       }
     });
