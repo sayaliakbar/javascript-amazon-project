@@ -45,7 +45,6 @@ describe("Order summary functionality", () => {
     <div class="js-payment-summary"></div>`;
 
       renderOrderSummary();
-      console.log(document.querySelector(".js-test-checkout-container"));
     });
 
     afterEach(() => {
@@ -53,7 +52,6 @@ describe("Order summary functionality", () => {
     });
 
     it("displays the cart with correct product information", () => {
-      console.log(document.querySelectorAll(".js-cart-item-container"));
       expect(
         document.querySelectorAll(".js-cart-item-container").length
       ).toEqual(2);
