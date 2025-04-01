@@ -16,7 +16,7 @@ export class Orders {
       this.orderItems = [
         {
           orderId: "27cba69d-4c3d-4098-b42d-ac7fa62b7664",
-          orderDate: "August 12",
+          orderDate: "2023-08-12T00:00:00.000Z", // Changed to ISO format
           orderPriceCents: 3506,
           orderItem: [
             {
@@ -33,7 +33,7 @@ export class Orders {
         },
         {
           orderId: "b6b6c212-d30e-4d4a-805d-90b52ce6b37d",
-          orderDate: "June 10",
+          orderDate: "2023-06-10T00:00:00.000Z", // Changed to ISO format
           orderPriceCents: 4190,
           orderItem: [
             {
@@ -59,8 +59,8 @@ export class Orders {
     // Generate a unique ID
     const orderId = this.generateUniqueId();
 
-    // Get current date in required format
-    const orderDate = this.formatDate(new Date());
+    // Get current date in ISO format
+    const orderDate = new Date().toISOString();
 
     const newOrder = {
       orderId,
@@ -92,6 +92,24 @@ export class Orders {
 
   getOrderById(orderId) {
     return this.orderItems.find((order) => order.orderId === orderId);
+  }
+
+  // New method to get dayjs object from stored date
+  getOrderDate(orderId) {
+    const order = this.getOrderById(orderId);
+    if (order) {
+      return dayjs(order.orderDate);
+    }
+    return null;
+  }
+
+  // New method to get formatted date for display
+  getFormattedOrderDate(orderId) {
+    const order = this.getOrderById(orderId);
+    if (order) {
+      return this.formatDate(order.orderDate);
+    }
+    return "";
   }
 }
 
