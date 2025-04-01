@@ -86,6 +86,7 @@ export class Cart {
     renderOrderSummary();
     this.saveToLocalStorage();
   }
+
   calculateCartQuantity() {
     let cartQuantity = 0;
 
@@ -107,14 +108,17 @@ export class Cart {
   }
 
   updateQuantity(productId, newQuantity) {
+    // Data logic
     if (newQuantity >= 0 && newQuantity < 1000) {
       if (newQuantity === 0) {
         this.removeFromCart(productId);
         this.updateCartQuantity();
+        // UI update should be handled elsewhere
         renderCheckoutHeader();
         return;
       }
 
+      // UI updates mixed with data logic
       document.querySelector(`.js-quantity-label-${productId}`).innerText =
         newQuantity;
 
@@ -124,35 +128,37 @@ export class Cart {
         }
       });
 
+      // More UI updates
       document
         .querySelector(`.js-cart-item-container-${productId}`)
         .classList.remove("is-editing-quantity");
-      localStorage.setItem(
-        this.#localStorageKey,
-        JSON.stringify(this.cartItems)
-      );
+
+      this.saveToLocalStorage();
       this.updateCartQuantity();
 
+      // More UI updates
       document
         .querySelector(`.js-quantity-input-${productId}`)
         .classList.remove("quantity-input-error");
     } else {
+      // UI update for error state
       document
         .querySelector(`.js-quantity-input-${productId}`)
         .classList.add("quantity-input-error");
     }
 
+    // More UI updates
     document.querySelector(`.js-quantity-input-${productId}`).value = "";
     renderCheckoutHeader();
   }
 
   updateDeliveryOption(productId, deliveryOptionId) {
-    let matchingcartItem;
+    let matchingItem;
     let isOptionId = false;
 
     this.cartItems.forEach((cartItem) => {
       if (cartItem.productId === productId) {
-        matchingcartItem = cartItem;
+        matchingItem = cartItem;
       }
     });
 
@@ -162,8 +168,8 @@ export class Cart {
       }
     });
 
-    if (matchingcartItem && isOptionId) {
-      matchingcartItem.deliveryOptionId = deliveryOptionId;
+    if (matchingItem && isOptionId) {
+      matchingItem.deliveryOptionId = deliveryOptionId;
     } else {
       return;
     }
