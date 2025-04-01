@@ -133,8 +133,9 @@ describe("Delivery Options Module Tests", () => {
         .add(option1.deliveryDays, "day")
         .format("dddd, MMMM D");
       const expectedDate2 = today
-        .add(option2.deliveryDays, "day")
+        .add(option2.deliveryDays + 2, "day")
         .format("dddd, MMMM D");
+
       const expectedDate3 = today
         .add(option3.deliveryDays, "day")
         .format("dddd, MMMM D");
