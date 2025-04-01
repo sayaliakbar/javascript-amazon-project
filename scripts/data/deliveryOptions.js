@@ -30,11 +30,15 @@ export function getDeliveryOption(deliveryOptionId) {
 }
 
 export function calculateDeliveryDate(deliveryOption, today = dayjs()) {
-  // Get the current date - this should use our mock in tests
-  // today parameter now replaces the direct dayjs() call
+  // Ensure today is a dayjs object
+  let todayObj = today;
+  if (!today || typeof today.add !== "function") {
+    todayObj = dayjs(today);
+  }
+
   // Add the delivery days to get the initial delivery date
   const daysToAdd = deliveryOption.deliveryDays;
-  let deliveryDate = today.add(daysToAdd, "day");
+  let deliveryDate = todayObj.add(daysToAdd, "day");
 
   // Adjust for weekends
   const dayOfWeek = deliveryDate.format("dddd");
