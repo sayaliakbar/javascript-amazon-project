@@ -7,7 +7,6 @@ import { getProduct } from "../data/products.js";
 export function orderItemsHTML(orderProducts) {
   let orderProductsHTML = "";
 
-  const { orderDate } = orderProducts;
   orderProducts.orderItem.forEach((orderItem) => {
     const { productId, deliveryOptionId } = orderItem;
     const matchingItem = getProduct(productId);
@@ -35,7 +34,7 @@ export function orderItemsHTML(orderProducts) {
           </div>
 
           <div class="product-actions">
-            <a href="tracking.html">
+            <a href="tracking.html?orderId=${orderProducts.orderId}&productId=${matchingItem.id}">
               <button class="track-package-button button-secondary">
                 Track package
               </button>
