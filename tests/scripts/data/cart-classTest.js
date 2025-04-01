@@ -178,6 +178,9 @@ describe("Cart functionality", () => {
   });
 
   describe("calculateCartQuantity", () => {
+    beforeEach(() => {
+      spyOn(localStorage, "setItem");
+    });
     it("correctly calculates total quantity of items in cart", () => {
       cart.cartItems = [
         {
@@ -337,6 +340,8 @@ describe("Cart functionality", () => {
     let originalBody;
 
     beforeEach(() => {
+      spyOn(localStorage, "setItem");
+
       originalBody = document.body.innerHTML;
       document.body.innerHTML = '<span class="js-cart-quantity"></span>';
     });
@@ -369,6 +374,8 @@ describe("Cart functionality", () => {
 
   describe("delivery options validation", () => {
     beforeEach(() => {
+      spyOn(localStorage, "setItem");
+
       // Mock the deliveryOptions
       spyOn(deliveryOptions, "forEach").and.callFake((callback) => {
         [
