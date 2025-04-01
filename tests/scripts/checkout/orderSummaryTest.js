@@ -1,5 +1,5 @@
 import { renderOrderSummary } from "../../../scripts/checkout/orderSummary.js";
-import { loadFromStorage, cart } from "../../../scripts/data/cart.js";
+import { cart } from "../../../scripts/data/cart-class.js";
 
 const product1 = "e43638ce-6aa0-4b85-b27f-e1d07eb678c6";
 const product2 = "15b6fc6f-327a-4ec4-896f-486349e85a3d";
@@ -27,28 +27,25 @@ describe("Order summary functionality", () => {
     beforeEach(() => {
       spyOn(localStorage, "setItem");
 
-      spyOn(localStorage, "getItem").and.callFake(() => {
-        return JSON.stringify([
-          {
-            productId: product1,
-            quantity: 2,
-            deliveryOptionId: "1",
-          },
-          {
-            productId: product2,
-            quantity: 4,
-            deliveryOptionId: "2",
-          },
-        ]);
-      });
-
-      loadFromStorage();
+      cart.cartItems = [
+        {
+          productId: product1,
+          quantity: 2,
+          deliveryOptionId: "1",
+        },
+        {
+          productId: product2,
+          quantity: 4,
+          deliveryOptionId: "2",
+        },
+      ];
 
       document.querySelector(".js-test-checkout-container").innerHTML = `
     <div class="js-order-summary"></div>
     <div class="js-payment-summary"></div>`;
 
       renderOrderSummary();
+      console.log(document.querySelector(".js-test-checkout-container"));
     });
 
     afterEach(() => {
@@ -56,6 +53,7 @@ describe("Order summary functionality", () => {
     });
 
     it("displays the cart with correct product information", () => {
+      console.log(document.querySelectorAll(".js-cart-item-container"));
       expect(
         document.querySelectorAll(".js-cart-item-container").length
       ).toEqual(2);
@@ -90,8 +88,8 @@ describe("Order summary functionality", () => {
       ).not.toEqual(null);
 
       // Verify cart data structure
-      expect(cart.length).toEqual(1);
-      expect(cart[0].productId).toEqual(product2);
+      expect(cart.cartItems.length).toEqual(1);
+      expect(cart.cartItems[0].productId).toEqual(product2);
 
       // Verify remaining product's information
       verifyProductInDOM(
@@ -110,9 +108,9 @@ describe("Order summary functionality", () => {
           .checked
       ).toEqual(true);
 
-      expect(cart.length).toEqual(2);
-      expect(cart[0].productId).toEqual(product1);
-      expect(cart[0].deliveryOptionId).toEqual("3");
+      expect(cart.cartItems.length).toEqual(2);
+      expect(cart.cartItems[0].productId).toEqual(product1);
+      expect(cart.cartItems[0].deliveryOptionId).toEqual("3");
 
       expect(
         document.querySelector(".js-payment-summary-money-shipping").innerText
