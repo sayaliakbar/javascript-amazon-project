@@ -129,20 +129,19 @@ describe("Delivery Options Module Tests", () => {
       const date3 = calculateDeliveryDate(option3);
 
       // Verify each date is correctly calculated
-      const expectedDate1 = today
-        .add(option1.deliveryDays, "day")
-        .format("dddd, MMMM D");
-      const expectedDate2 = today
-        .add(option2.deliveryDays + 2, "day")
-        .format("dddd, MMMM D");
+      const expectedDate1 = today.add(option1.deliveryDays, "day");
+      const expectedDate2 = today.add(option2.deliveryDays + 2, "day");
+      const expectedDate3 = today.add(option3.deliveryDays, "day");
 
-      const expectedDate3 = today
-        .add(option3.deliveryDays, "day")
-        .format("dddd, MMMM D");
-
-      expect(date1).toBe(expectedDate1);
-      expect(date2).toBe(expectedDate2);
-      expect(date3).toBe(expectedDate3);
+      expect(date1.format("dddd, MMMM D")).toBe(
+        expectedDate1.format("dddd, MMMM D")
+      );
+      expect(date2.format("dddd, MMMM D")).toBe(
+        expectedDate2.format("dddd, MMMM D")
+      );
+      expect(date3.format("dddd, MMMM D")).toBe(
+        expectedDate3.format("dddd, MMMM D")
+      );
     });
 
     it("should adjust delivery dates that fall on Saturday (adding 2 days)", () => {
@@ -156,21 +155,14 @@ describe("Delivery Options Module Tests", () => {
       const deliveryDate = calculateDeliveryDate(mockOption, mockDay);
 
       // Explicitly verify it's Monday and not Saturday
-      // Use the parse plugin to correctly parse the formatted date
-      const year = mockDay.year(); // Get the year from the mock date
-      const resultDate = dayjs(
-        `${deliveryDate}, ${year}`,
-        "dddd, MMMM D, YYYY"
-      );
-
-      expect(resultDate.format("dddd")).not.toBe("Saturday");
-      expect(resultDate.format("dddd")).toBe("Monday");
+      expect(deliveryDate.format("dddd")).not.toBe("Saturday");
+      expect(deliveryDate.format("dddd")).toBe("Monday");
 
       // Should be Monday (Wednesday + 3 days + 2 weekend days)
-      const expectedDate = mockDay
-        .add(deliveryDays + 2, "day")
-        .format("dddd, MMMM D");
-      expect(deliveryDate).toBe(expectedDate);
+      const expectedDate = mockDay.add(deliveryDays + 2, "day");
+      expect(deliveryDate.format("dddd, MMMM D")).toBe(
+        expectedDate.format("dddd, MMMM D")
+      );
     });
 
     it("should adjust delivery dates that fall on Sunday (adding 1 day)", () => {
@@ -181,21 +173,15 @@ describe("Delivery Options Module Tests", () => {
 
       const deliveryDate = calculateDeliveryDate(mockOption, mockDay);
 
-      // Explicitly verify it's Monday and not Saturday
-      // Use the parse plugin to correctly parse the formatted date
-      const year = mockDay.year(); // Get the year from the mock date
-      const resultDate = dayjs(
-        `${deliveryDate}, ${year}`,
-        "dddd, MMMM D, YYYY"
-      );
-      expect(resultDate.format("dddd")).not.toBe("Sunday");
-      expect(resultDate.format("dddd")).toBe("Monday");
+      // Explicitly verify it's Monday and not Sunday
+      expect(deliveryDate.format("dddd")).not.toBe("Sunday");
+      expect(deliveryDate.format("dddd")).toBe("Monday");
 
       // Should be Monday (Thursday + 3 days + 1 weekend day)
-      const expectedDate = mockDay
-        .add(deliveryDays + 1, "day")
-        .format("dddd, MMMM D");
-      expect(deliveryDate).toBe(expectedDate);
+      const expectedDate = mockDay.add(deliveryDays + 1, "day");
+      expect(deliveryDate.format("dddd, MMMM D")).toBe(
+        expectedDate.format("dddd, MMMM D")
+      );
     });
 
     it("should not adjust delivery dates that fall on weekdays", () => {
@@ -207,11 +193,11 @@ describe("Delivery Options Module Tests", () => {
       const deliveryDate = calculateDeliveryDate(mockOption, mockDay);
 
       // Should be Friday (no adjustment needed)
-      const expectedDate = mockDay
-        .add(deliveryDays, "day")
-        .format("dddd, MMMM D");
-      expect(deliveryDate).toBe(expectedDate);
-      expect(deliveryDate).toContain("Friday");
+      const expectedDate = mockDay.add(deliveryDays, "day");
+      expect(deliveryDate.format("dddd, MMMM D")).toBe(
+        expectedDate.format("dddd, MMMM D")
+      );
+      expect(deliveryDate.format("dddd")).toContain("Friday");
     });
 
     it("should format the returned date correctly", () => {
@@ -230,13 +216,15 @@ describe("Delivery Options Module Tests", () => {
         // Calculate delivery date using our test date
         const deliveryDate = calculateDeliveryDate(option, testDate);
 
-        // Check format matches "dddd, MMMM D" (day of week, month name, day)
-        expect(deliveryDate).toMatch(/^[A-Z][a-z]+, [A-Z][a-z]+ \d{1,2}$/);
+        // Check the dayjs formatting works properly
+        const formattedDate = deliveryDate.format("dddd, MMMM D");
+        expect(formattedDate).toMatch(/^[A-Z][a-z]+, [A-Z][a-z]+ \d{1,2}$/);
 
         // Verify the format without checking the exact date
         // This just confirms the date is formatted properly
-        expect(deliveryDate.split(" ").length).toBe(3);
-        expect(deliveryDate.includes(",")).toBe(true);
+        const parts = formattedDate.split(" ");
+        expect(parts.length).toBe(3);
+        expect(formattedDate.includes(",")).toBe(true);
       }
     });
   });
