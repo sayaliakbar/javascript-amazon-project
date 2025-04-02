@@ -9,43 +9,32 @@ export class Orders {
     this.loadFromStorage();
   }
 
+  /**
+   * Loads order data from localStorage.
+   * Handles empty or invalid data gracefully by defaulting to an empty array.
+   */
   loadFromStorage() {
-    this.orderItems = JSON.parse(localStorage.getItem(this.#localStorageKey));
+    try {
+      const storageData = localStorage.getItem(this.#localStorageKey);
 
-    if (!this.orderItems) {
-      this.orderItems = [
-        {
-          orderId: "27cba69d-4c3d-4098-b42d-ac7fa62b7664",
-          orderDate: "2023-08-12T00:00:00.000Z", // Changed to ISO format
-          orderPriceCents: 3506,
-          orderItem: [
-            {
-              productId: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
-              quantity: 1,
-              deliveryOptionId: "2",
-            },
-            {
-              productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
-              quantity: 2,
-              deliveryOptionId: "7",
-            },
-          ],
-        },
-        {
-          orderId: "b6b6c212-d30e-4d4a-805d-90b52ce6b37d",
-          orderDate: "2023-06-10T00:00:00.000Z", // Changed to ISO format
-          orderPriceCents: 4190,
-          orderItem: [
-            {
-              productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
-              quantity: 2,
-              deliveryOptionId: "7",
-            },
-          ],
-        },
-      ];
+      // Handle null or undefined values from localStorage
+      if (!storageData) {
+        this.orderItems = [];
+        return;
+      }
+
+      // Try to parse JSON
+      this.orderItems = JSON.parse(storageData);
+
+      // Check if we got a valid array, fallback to empty array if not
+      if (!Array.isArray(this.orderItems)) {
+        this.orderItems = [];
+      }
+    } catch (error) {
+      console.error("Error loading orders from storage:", error);
+      // Default to empty array on error
+      this.orderItems = [];
     }
-    this.saveToLocalStorage();
   }
 
   saveToLocalStorage() {
@@ -94,22 +83,29 @@ export class Orders {
     return this.orderItems.find((order) => order.orderId === orderId);
   }
 
-  // New method to get dayjs object from stored date
+  /**
+   * Gets a dayjs object representing the order date
+   * @param {string} orderId - ID of the order to get date for
+   * @returns {object} dayjs object or null if order not found
+   */
   getOrderDate(orderId) {
     const order = this.getOrderById(orderId);
-    if (order) {
-      return dayjs(order.orderDate);
-    }
-    return null;
+    if (!order) return null;
+    return dayjs(order.orderDate);
   }
 
-  // New method to get formatted date for display
+  /**
+   * Gets a formatted date string for an order
+   * @param {string} orderId - ID of the order to format date for
+   * @returns {string} Formatted date or empty string if order not found
+   */
   getFormattedOrderDate(orderId) {
-    const order = this.getOrderById(orderId);
-    if (order) {
-      return this.formatDate(order.orderDate);
-    }
-    return "";
+    // This should call getOrderDate internally
+    const dateObj = this.getOrderDate(orderId);
+    if (!dateObj) return "";
+
+    // Format the date using the formatDate method
+    return this.formatDate(dateObj.toDate());
   }
 }
 
