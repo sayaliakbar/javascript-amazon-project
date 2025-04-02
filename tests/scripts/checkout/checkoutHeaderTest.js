@@ -1,5 +1,5 @@
 import renderCheckoutHeader from "../../../scripts/checkout/checkoutHeader.js";
-import { cart } from "../../../scripts/data/cart-class.js";
+import { cart } from "../../../scripts/data/cart.js";
 
 describe("Checkout header functionality", () => {
   describe("renderCheckoutHeader", () => {
