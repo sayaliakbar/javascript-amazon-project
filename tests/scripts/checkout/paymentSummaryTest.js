@@ -1,5 +1,5 @@
 import renderPaymentSummary from "../../../scripts/checkout/paymentSummary.js";
-import { cart } from "../../../scripts/data/cart-class.js";
+import { cart } from "../../../scripts/data/cart.js";
 import { getProduct } from "../../../scripts/data/products.js";
 import { getDeliveryOption } from "../../../scripts/data/deliveryOptions.js";
 import { formatCurrency } from "../../../utils/money.js";
