@@ -11,7 +11,7 @@ let orderList = "";
 if (!orders.orderItems || orders.orderItems.length === 0) {
   orderList = `<div class="no-orders-message">
     <p>You have no orders yet.</p>
-    <a href="../index.html" class="continue-shopping-link">Continue Shopping</a>
+    <a href="index.html" class="continue-shopping-link">Continue Shopping</a>
   </div>`;
 } else {
   orders.orderItems.forEach((item) => {
