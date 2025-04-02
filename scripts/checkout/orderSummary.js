@@ -18,7 +18,7 @@ export function renderOrderSummary() {
     cartSummaryHTML = `
       <div class="empty-cart-message">
         <p>Your cart is empty.</p>
-        <a href="../index.html" class="empty-cart-link">Continue shopping</a>
+        <a href="../../index.html" class="empty-cart-link">Continue shopping</a>
       </div>
     `;
   } else {
