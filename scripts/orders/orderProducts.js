@@ -28,7 +28,9 @@ export function orderItemsHTML(orderProducts) {
             <div class="product-quantity">
               Quantity: ${orderItem.quantity}
             </div>
-            <button class="buy-again-button button-primary">
+            <button class="buy-again-button button-primary js-buy-again-button" data-product-id=${
+              matchingItem.id
+            }>
               <img class="buy-again-icon" src="images/icons/buy-again.png">
               <span class="buy-again-message">Buy it again</span>
             </button>
