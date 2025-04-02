@@ -13,15 +13,24 @@ import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 export function renderOrderSummary() {
   let cartSummaryHTML = "";
 
-  cart.cartItems.forEach((cartItem) => {
-    const { productId, deliveryOptionId } = cartItem;
-    const matchingItem = getProduct(productId);
-    const deliveryOption = getDeliveryOption(deliveryOptionId);
-    const deliveryDate = dayjs(calculateDeliveryDate(deliveryOption));
+  // Check if cart is empty or null
+  if (!cart.cartItems || cart.cartItems.length === 0) {
+    cartSummaryHTML = `
+      <div class="empty-cart-message">
+        <p>Your cart is empty.</p>
+        <a href="../index.html" class="empty-cart-link">Continue shopping</a>
+      </div>
+    `;
+  } else {
+    cart.cartItems.forEach((cartItem) => {
+      const { productId, deliveryOptionId } = cartItem;
+      const matchingItem = getProduct(productId);
+      const deliveryOption = getDeliveryOption(deliveryOptionId);
+      const deliveryDate = dayjs(calculateDeliveryDate(deliveryOption));
 
-    cartSummaryHTML += `<div class="cart-item-container js-cart-item-container js-cart-item-container-${
-      matchingItem.id
-    }">
+      cartSummaryHTML += `<div class="cart-item-container js-cart-item-container js-cart-item-container-${
+        matchingItem.id
+      }">
           <div class="delivery-date">
             Delivery date: ${deliveryDate.format("dddd, MMMM D")}
           </div>
@@ -52,8 +61,8 @@ export function renderOrderSummary() {
                  class="quantity-input
                  js-quantity-input
                  js-quantity-input-${matchingItem.id}" data-product-id="${
-      matchingItem.id
-    }">
+        matchingItem.id
+      }">
                 <span class="link-primary save-quantity-link js-save-quantity-link" data-product-id="${
                   matchingItem.id
                 }">Save</span>
@@ -79,7 +88,8 @@ export function renderOrderSummary() {
             </div>
           </div>
         </div>`;
-  });
+    });
+  }
 
   function deliveryOptionsHTML(matchingItem, cartItem) {
     let html = "";
@@ -123,65 +133,71 @@ export function renderOrderSummary() {
     orderSummaryContainer.innerHTML = cartSummaryHTML;
   }
 
-  document.querySelectorAll(".js-delete-link").forEach((link) => {
-    link.addEventListener("click", () => {
-      const { productId } = link.dataset;
-      cart.removeFromCart(productId);
-      renderPaymentSummary();
-      renderCheckoutHeader();
-      cart.updateCartQuantity();
+  // Only attach event listeners if cart is not empty
+  if (cart.cartItems && cart.cartItems.length > 0) {
+    document.querySelectorAll(".js-delete-link").forEach((link) => {
+      link.addEventListener("click", () => {
+        const { productId } = link.dataset;
+        cart.removeFromCart(productId);
+        renderPaymentSummary();
+        renderCheckoutHeader();
+        cart.updateCartQuantity();
+      });
     });
-  });
 
-  cart.updateCartQuantity();
+    cart.updateCartQuantity();
 
-  document.querySelectorAll(".js-update-quantity-link").forEach((link) => {
-    link.addEventListener("click", () => {
-      const { productId } = link.dataset;
+    document.querySelectorAll(".js-update-quantity-link").forEach((link) => {
+      link.addEventListener("click", () => {
+        const { productId } = link.dataset;
+
+        document
+          .querySelector(`.js-cart-item-container-${productId}`)
+          .classList.add("is-editing-quantity");
+      });
+    });
+
+    document.querySelectorAll(`.js-save-quantity-link`).forEach((link) => {
+      link.addEventListener("click", () => {
+        const { productId } = link.dataset;
+
+        const newQuantity = Number(
+          document.querySelector(`.js-quantity-input-${productId}`).value
+        );
+
+        cart.updateQuantity(productId, newQuantity);
+        renderPaymentSummary();
+      });
+    });
+
+    document.querySelectorAll(".js-quantity-input").forEach((input) => {
+      const { productId } = input.dataset;
 
       document
-        .querySelector(`.js-cart-item-container-${productId}`)
-        .classList.add("is-editing-quantity");
+        .querySelector(`.js-quantity-input-${productId}`)
+        .addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            const newQuantity = Number(
+              document.querySelector(`.js-quantity-input-${productId}`).value
+            );
+
+            cart.updateQuantity(productId, newQuantity);
+          }
+        });
     });
-  });
 
-  document.querySelectorAll(`.js-save-quantity-link`).forEach((link) => {
-    link.addEventListener("click", () => {
-      const { productId } = link.dataset;
-
-      const newQuantity = Number(
-        document.querySelector(`.js-quantity-input-${productId}`).value
-      );
-
-      cart.updateQuantity(productId, newQuantity);
-      renderPaymentSummary();
-    });
-  });
-
-  document.querySelectorAll(".js-quantity-input").forEach((input) => {
-    const { productId } = input.dataset;
-
-    document
-      .querySelector(`.js-quantity-input-${productId}`)
-      .addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-          const newQuantity = Number(
-            document.querySelector(`.js-quantity-input-${productId}`).value
-          );
-
-          cart.updateQuantity(productId, newQuantity);
-        }
+    document.querySelectorAll(".js-delivery-option").forEach((element) => {
+      element.addEventListener("click", () => {
+        const { productId, deliveryOptionId } = element.dataset;
+        cart.updateDeliveryOption(productId, deliveryOptionId);
+        renderOrderSummary();
+        renderPaymentSummary();
       });
-  });
-
-  document.querySelectorAll(".js-delivery-option").forEach((element) => {
-    element.addEventListener("click", () => {
-      const { productId, deliveryOptionId } = element.dataset;
-      cart.updateDeliveryOption(productId, deliveryOptionId);
-      renderOrderSummary();
-      renderPaymentSummary();
     });
-  });
+  } else {
+    // Still update cart quantity even when empty
+    cart.updateCartQuantity();
+  }
 }
 
 export default renderOrderSummary;
