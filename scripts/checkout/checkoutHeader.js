@@ -6,7 +6,7 @@ function renderCheckoutHeader() {
     cartItems += cartItem.quantity;
   });
 
-  const html = `Checkout (<a class="return-to-home-link js-cart-items-quantity" href="amazon.html">${cartItems} items</a>)`;
+  const html = `Checkout (<a class="return-to-home-link js-cart-items-quantity" href="index.html">${cartItems} items</a>)`;
 
   const headerItemCountElement = document.querySelector(
     ".js-checkout-header-middle-section"
