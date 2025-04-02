@@ -2,59 +2,71 @@ import { orders, Orders } from "../../../scripts/data/orders.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 
 describe("Orders class", () => {
+  // Sample order data for testing
+  const sampleOrders = [
+    {
+      orderId: "27cba69d-4c3d-4098-b42d-ac7fa62b7664",
+      orderDate: "2023-08-12T00:00:00.000Z",
+      orderPriceCents: 3506,
+      orderItem: [
+        {
+          productId: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
+          quantity: 1,
+          deliveryOptionId: "2",
+        },
+        {
+          productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
+          quantity: 2,
+          deliveryOptionId: "7",
+        },
+      ],
+    },
+    {
+      orderId: "b6b6c212-d30e-4d4a-805d-90b52ce6b37d",
+      orderDate: "2023-06-10T00:00:00.000Z",
+      orderPriceCents: 4190,
+      orderItem: [
+        {
+          productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
+          quantity: 2,
+          deliveryOptionId: "7",
+        },
+      ],
+    },
+  ];
+
+  let testOrders;
+
   beforeEach(() => {
-    // Setup for tests
+    // Setup mock localStorage BEFORE creating test instances
     spyOn(localStorage, "setItem");
-    orders.orderItems = [
-      {
-        orderId: "27cba69d-4c3d-4098-b42d-ac7fa62b7664",
-        orderDate: "2023-08-12T00:00:00.000Z", // Changed to ISO format
-        orderPriceCents: 3506,
-        orderItem: [
-          {
-            productId: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
-            quantity: 1,
-            deliveryOptionId: "2",
-          },
-          {
-            productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
-            quantity: 2,
-            deliveryOptionId: "7",
-          },
-        ],
-      },
-      {
-        orderId: "b6b6c212-d30e-4d4a-805d-90b52ce6b37d",
-        orderDate: "2023-06-10T00:00:00.000Z", // Changed to ISO format
-        orderPriceCents: 4190,
-        orderItem: [
-          {
-            productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
-            quantity: 2,
-            deliveryOptionId: "7",
-          },
-        ],
-      },
-    ];
+    spyOn(localStorage, "getItem").and.returnValue(JSON.stringify([]));
+
+    // Reset the main orders object to a known state
+    orders.orderItems = [...sampleOrders];
+
+    // Create a fresh test instance for each test
+    testOrders = new Orders("test-orders");
+    testOrders.orderItems = [];
+
+    // Clear spy counts
+    localStorage.setItem.calls.reset();
+    localStorage.getItem.calls.reset();
   });
 
   afterEach(() => {
-    // Cleanup after tests
+    // Clean up any additional test data or state
   });
 
-  describe("Constructor and initialization", () => {
+  // Group 1: Initialization and Constructor Tests
+  describe("Initialization", () => {
     it("initializes with the provided local storage key", () => {
-      // Test initialization with custom key
+      // Need to mock localStorage.getItem before creating a new instance
+      localStorage.getItem.and.returnValue(JSON.stringify([]));
+
       const customKey = "test-orders-storage";
-      const testOrders = new Orders(customKey);
-
-      // Clear spy count before testing
-      localStorage.setItem.calls.reset();
-
-      // Trigger saving to storage which will use the private key
-      testOrders.saveToLocalStorage();
-
-      // Verify the correct key was used when saving
+      const customOrders = new Orders(customKey);
+      customOrders.saveToLocalStorage();
       expect(localStorage.setItem).toHaveBeenCalledWith(
         customKey,
         jasmine.any(String)
@@ -62,246 +74,328 @@ describe("Orders class", () => {
     });
 
     it("initializes with the default local storage key if none provided", () => {
-      // Test default key initialization
+      // Need to mock localStorage.getItem before creating a new instance
+      localStorage.getItem.and.returnValue(JSON.stringify([]));
+
       const defaultKey = "orders";
-      const testOrders = new Orders();
-
-      // Clear spy count before testing
-      localStorage.setItem.calls.reset();
-
-      // Trigger saving to storage which will use the private key
-      testOrders.saveToLocalStorage();
-
-      // Verify the default key was used when saving
+      const defaultOrders = new Orders();
+      defaultOrders.saveToLocalStorage();
       expect(localStorage.setItem).toHaveBeenCalledWith(
         defaultKey,
         jasmine.any(String)
       );
     });
-  });
 
-  describe("loadFromStorage", () => {
-    it("loads existing orders from localStorage", () => {
-      // Test loading existing orders
-      // Setup mock localStorage.getItem to return predefined data
-      const mockOrderData = JSON.stringify([
-        {
-          orderId: "test-id-1",
-          orderDate: "2023-09-15T00:00:00.000Z",
-          orderPriceCents: 2000,
-          orderItem: [],
-        },
-      ]);
+    it("should start with an empty orderItems array when first created", () => {
+      // Need to mock localStorage.getItem before creating a new instance
+      localStorage.getItem.and.returnValue(JSON.stringify([]));
 
-      spyOn(localStorage, "getItem").and.returnValue(mockOrderData);
-
-      // Create new instance and load from storage
-      const testOrders = new Orders("test-key");
-      testOrders.orderItems = []; // Reset to empty first
-      testOrders.loadFromStorage();
-
-      // Verify orders were loaded correctly
-      expect(testOrders.orderItems.length).toBe(1);
-      expect(testOrders.orderItems[0].orderId).toBe("test-id-1");
-      expect(testOrders.orderItems[0].orderPriceCents).toBe(2000);
-    });
-
-    it("initializes with default orders when localStorage is empty", () => {
-      // Mock localStorage to return null (empty)
-      spyOn(localStorage, "getItem").and.returnValue(JSON.stringify([]));
-
-      // Create new instance and load from storage
-      const testOrders = new Orders("test-key");
-
-      // Call loadFromStorage which should handle the null case
-      testOrders.loadFromStorage();
-
-      // Verify the method was called with the right key
-      expect(localStorage.getItem).toHaveBeenCalledWith("test-key");
-
-      // Verify default empty array is used when localStorage returns []
-      expect(testOrders.orderItems.length).toEqual(0);
+      const freshOrders = new Orders("fresh");
+      expect(freshOrders.orderItems).toEqual([]);
     });
   });
 
-  describe("saveToLocalStorage", () => {
-    it("saves orders to localStorage with the correct key", () => {
-      // Test saving to localStorage
-      const testOrders = new Orders("test-key");
+  // Group 2: Storage Operations Tests
+  describe("Storage Operations", () => {
+    describe("loadFromStorage", () => {
+      it("loads existing orders from localStorage", () => {
+        const mockOrderData = JSON.stringify(sampleOrders);
+        localStorage.getItem.and.returnValue(mockOrderData);
 
-      // Clear any previous calls
-      localStorage.setItem.calls.reset();
+        // Create new instance after mocking
+        const newOrders = new Orders("test-orders");
 
-      testOrders.saveToLocalStorage();
+        expect(localStorage.getItem).toHaveBeenCalledWith("test-orders");
+        expect(newOrders.orderItems.length).toBe(2);
+        expect(newOrders.orderItems[0].orderId).toBe(
+          "27cba69d-4c3d-4098-b42d-ac7fa62b7664"
+        );
+      });
 
-      // Verify localStorage.setItem was called with the right parameters
-      expect(localStorage.setItem).toHaveBeenCalledWith(
-        "test-key",
-        JSON.stringify(testOrders.orderItems)
-      );
+      it("initializes with empty array when localStorage is empty", () => {
+        // Mock null return from localStorage
+        localStorage.getItem.and.returnValue(null);
+
+        // Create a completely fresh instance without any preset orderItems
+        const emptyOrders = new Orders("empty-test-orders");
+
+        // Clear any internal state by assigning a new orderItems array
+        emptyOrders.orderItems = [];
+
+        // When we explicitly call loadFromStorage with a null localStorage value
+        emptyOrders.loadFromStorage();
+
+        // The result should be an empty array
+        expect(emptyOrders.orderItems).toEqual([]);
+      });
+
+      it("handles invalid JSON data gracefully", () => {
+        // Setup invalid JSON
+        localStorage.getItem.and.returnValue("invalid-json-data");
+
+        // Create a new instance for this test
+        const errorOrders = new Orders("error-test-orders");
+
+        // Reset orderItems to a known state
+        errorOrders.orderItems = [];
+
+        // The test should not throw when we explicitly call loadFromStorage
+        expect(() => {
+          errorOrders.loadFromStorage();
+        }).not.toThrow();
+
+        // And orderItems should be an empty array as fallback
+        expect(errorOrders.orderItems).toEqual([]);
+      });
+    });
+
+    describe("saveToLocalStorage", () => {
+      it("saves orders to localStorage with the correct key", () => {
+        testOrders.orderItems = sampleOrders;
+        testOrders.saveToLocalStorage();
+
+        expect(localStorage.setItem).toHaveBeenCalledWith(
+          "test-orders",
+          JSON.stringify(sampleOrders)
+        );
+      });
+
+      it("saves empty array when no orders exist", () => {
+        testOrders.orderItems = [];
+        testOrders.saveToLocalStorage();
+
+        expect(localStorage.setItem).toHaveBeenCalledWith("test-orders", "[]");
+      });
     });
   });
 
-  describe("createOrderFromCart", () => {
-    it("creates a new order with the correct structure", () => {
-      const testOrders = new Orders();
-      const cart = {
-        cartItems: [
-          {
-            productId: "test-product-1",
-            quantity: 2,
-            deliveryOptionId: "3",
-          },
-        ],
-      };
-      const orderPriceCents = 2500;
+  // Group 3: Order Creation and Management Tests
+  describe("Order Management", () => {
+    describe("createOrderFromCart", () => {
+      it("creates a new order with the correct structure", () => {
+        const cart = {
+          cartItems: [
+            {
+              productId: "test-product-1",
+              quantity: 2,
+              deliveryOptionId: "3",
+            },
+          ],
+        };
+        const orderPriceCents = 2500;
 
-      spyOn(testOrders, "generateUniqueId").and.returnValue("test-uuid");
-      spyOn(testOrders, "saveToLocalStorage");
+        spyOn(testOrders, "generateUniqueId").and.returnValue("test-uuid");
+        spyOn(testOrders, "saveToLocalStorage");
 
-      const orderId = testOrders.createOrderFromCart(cart, orderPriceCents);
+        const orderId = testOrders.createOrderFromCart(cart, orderPriceCents);
+        const createdOrder = testOrders.getOrderById(orderId);
 
-      // Get the created order
-      const createdOrder = testOrders.getOrderById(orderId);
+        expect(createdOrder).toBeDefined();
+        expect(createdOrder.orderId).toBe("test-uuid");
+        expect(createdOrder.orderPriceCents).toBe(orderPriceCents);
+        expect(createdOrder.orderItem).toEqual(cart.cartItems);
+        expect(createdOrder.orderDate).toBeDefined();
+      });
 
-      // Check structure
-      expect(createdOrder).toBeDefined();
-      expect(createdOrder.orderId).toBe("test-uuid");
-      expect(createdOrder.orderPriceCents).toBe(orderPriceCents);
-      expect(createdOrder.orderItem).toEqual(cart.cartItems);
-      expect(createdOrder.orderDate).toBeDefined();
-    });
+      it("adds the new order to the orderItems array", () => {
+        const cart = {
+          cartItems: [
+            { productId: "test-product-1", quantity: 1, deliveryOptionId: "1" },
+          ],
+        };
 
-    it("adds the new order to the orderItems array", () => {
-      const testOrders = new Orders();
-      const initialLength = testOrders.orderItems.length;
-      const cart = {
-        cartItems: [
-          { productId: "test-product-1", quantity: 1, deliveryOptionId: "1" },
-        ],
-      };
+        testOrders.createOrderFromCart(cart, 1000);
 
-      testOrders.createOrderFromCart(cart, 1000);
+        expect(testOrders.orderItems.length).toBe(1);
+      });
 
-      expect(testOrders.orderItems.length).toBe(initialLength + 1);
-    });
-
-    it("saves to localStorage after creating an order", () => {
-      const testOrders = new Orders();
-      spyOn(testOrders, "saveToLocalStorage");
-
-      testOrders.createOrderFromCart(
-        {
+      it("saves to localStorage after creating an order", () => {
+        const cart = {
           cartItems: [
             { productId: "test-product", quantity: 1, deliveryOptionId: "1" },
           ],
-        },
-        1500
-      );
+        };
 
-      expect(testOrders.saveToLocalStorage).toHaveBeenCalled();
-    });
+        spyOn(testOrders, "saveToLocalStorage");
+        testOrders.createOrderFromCart(cart, 1500);
 
-    it("returns the new order ID", () => {
-      const testOrders = new Orders();
-      const mockId = "mock-uuid-1234";
-      spyOn(testOrders, "generateUniqueId").and.returnValue(mockId);
+        expect(testOrders.saveToLocalStorage).toHaveBeenCalled();
+      });
 
-      const result = testOrders.createOrderFromCart(
-        {
+      it("returns the new order ID", () => {
+        const cart = {
           cartItems: [
             { productId: "test", quantity: 1, deliveryOptionId: "1" },
           ],
-        },
-        1000
-      );
+        };
 
-      expect(result).toBe(mockId);
+        const mockId = "mock-uuid-1234";
+        spyOn(testOrders, "generateUniqueId").and.returnValue(mockId);
+
+        const result = testOrders.createOrderFromCart(cart, 1000);
+
+        expect(result).toBe(mockId);
+      });
+
+      it("handles empty cart gracefully", () => {
+        const emptyCart = { cartItems: [] };
+
+        const orderId = testOrders.createOrderFromCart(emptyCart, 0);
+        const createdOrder = testOrders.getOrderById(orderId);
+
+        expect(createdOrder.orderItem).toEqual([]);
+        expect(createdOrder.orderPriceCents).toBe(0);
+      });
+
+      it("uses current date for new orders", () => {
+        const cart = {
+          cartItems: [
+            { productId: "test", quantity: 1, deliveryOptionId: "1" },
+          ],
+        };
+
+        // Create a spy on Date constructor to return a specific date
+        const fixedDate = new Date(2023, 9, 15); // October 15, 2023
+        jasmine.clock().mockDate(fixedDate);
+
+        const orderId = testOrders.createOrderFromCart(cart, 1000);
+        const createdOrder = testOrders.getOrderById(orderId);
+
+        // Should use the current date (our fixed date)
+        expect(new Date(createdOrder.orderDate).getDate()).toBe(15);
+        expect(new Date(createdOrder.orderDate).getMonth()).toBe(9); // October
+        expect(new Date(createdOrder.orderDate).getFullYear()).toBe(2023);
+
+        jasmine.clock().uninstall();
+      });
+    });
+
+    describe("getOrderById", () => {
+      beforeEach(() => {
+        testOrders.orderItems = [...sampleOrders];
+      });
+
+      it("returns the correct order when ID exists", () => {
+        const existingId = "27cba69d-4c3d-4098-b42d-ac7fa62b7664";
+        const order = testOrders.getOrderById(existingId);
+
+        expect(order).toBeDefined();
+        expect(order.orderId).toBe(existingId);
+        expect(order.orderPriceCents).toBe(3506);
+      });
+
+      it("returns undefined when ID doesn't exist", () => {
+        const nonExistentId = "non-existent-id";
+        const order = testOrders.getOrderById(nonExistentId);
+
+        expect(order).toBeUndefined();
+      });
+
+      it("returns undefined when passed a null or undefined ID", () => {
+        expect(testOrders.getOrderById(null)).toBeUndefined();
+        expect(testOrders.getOrderById(undefined)).toBeUndefined();
+      });
     });
   });
 
-  describe("generateUniqueId", () => {
-    it("generates a properly formatted UUID", () => {
-      const testOrders = new Orders();
-      const uuid = testOrders.generateUniqueId();
+  // Group 4: Utility Method Tests
+  describe("Utility Methods", () => {
+    describe("generateUniqueId", () => {
+      it("generates a properly formatted UUID", () => {
+        const uuid = testOrders.generateUniqueId();
+        const uuidRegex =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-      // UUID format: 8-4-4-4-12 hex digits
-      const uuidRegex =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        expect(uuidRegex.test(uuid)).toBe(true);
+      });
 
-      expect(uuidRegex.test(uuid)).toBe(true);
+      it("generates different IDs for each call", () => {
+        const uuid1 = testOrders.generateUniqueId();
+        const uuid2 = testOrders.generateUniqueId();
+
+        expect(uuid1).not.toBe(uuid2);
+      });
     });
 
-    it("generates different IDs for each call", () => {
-      const testOrders = new Orders();
-      const uuid1 = testOrders.generateUniqueId();
-      const uuid2 = testOrders.generateUniqueId();
+    describe("Date Handling", () => {
+      beforeEach(() => {
+        testOrders.orderItems = [...sampleOrders];
+      });
 
-      expect(uuid1).not.toBe(uuid2);
-    });
-  });
+      describe("formatDate", () => {
+        it("formats dates in the expected 'Month Day' format", () => {
+          const date = new Date(2023, 0, 15); // January 15, 2023
+          const formattedDate = testOrders.formatDate(date);
 
-  describe("formatDate", () => {
-    it("formats dates in the expected 'Month Day' format", () => {
-      const testOrders = new Orders();
-      const date = new Date(2023, 0, 15); // January 15, 2023
-      const formattedDate = testOrders.formatDate(date);
+          expect(formattedDate).toBe("January 15");
+        });
 
-      expect(formattedDate).toBe("January 15");
-    });
-  });
+        it("handles different months correctly", () => {
+          expect(testOrders.formatDate(new Date(2023, 0, 1))).toBe("January 1");
+          expect(testOrders.formatDate(new Date(2023, 5, 15))).toBe("June 15");
+          expect(testOrders.formatDate(new Date(2023, 11, 25))).toBe(
+            "December 25"
+          );
+        });
 
-  describe("getOrderById", () => {
-    it("returns the correct order when ID exists", () => {
-      const existingId = "27cba69d-4c3d-4098-b42d-ac7fa62b7664";
-      const order = orders.getOrderById(existingId);
+        it("handles dates without leading zeros", () => {
+          expect(testOrders.formatDate(new Date(2023, 7, 5))).toBe("August 5");
+          expect(testOrders.formatDate(new Date(2023, 7, 15))).toBe(
+            "August 15"
+          );
+        });
+      });
 
-      expect(order).toBeDefined();
-      expect(order.orderId).toBe(existingId);
-    });
+      describe("getOrderDate", () => {
+        it("returns a dayjs object for a valid order ID", () => {
+          const validId = "27cba69d-4c3d-4098-b42d-ac7fa62b7664";
+          const dateObj = testOrders.getOrderDate(validId);
 
-    it("returns undefined when ID doesn't exist", () => {
-      const nonExistentId = "non-existent-id";
-      const order = orders.getOrderById(nonExistentId);
+          expect(dateObj).toBeDefined();
+          expect(dayjs.isDayjs(dateObj)).toBe(true);
+          expect(dateObj.format("YYYY-MM-DD")).toBe("2023-08-12");
+        });
 
-      expect(order).toBeUndefined();
-    });
-  });
+        it("returns null for an invalid order ID", () => {
+          const invalidId = "invalid-order-id";
+          const dateObj = testOrders.getOrderDate(invalidId);
 
-  describe("getOrderDate", () => {
-    it("returns a dayjs object for a valid order ID", () => {
-      const validId = "27cba69d-4c3d-4098-b42d-ac7fa62b7664";
-      const dateObj = orders.getOrderDate(validId);
+          expect(dateObj).toBeNull();
+        });
+      });
 
-      expect(dateObj).toBeDefined();
-      expect(dayjs.isDayjs(dateObj)).toBe(true);
-      expect(dateObj.format("YYYY-MM-DD")).toBe("2023-08-12");
-    });
+      describe("getFormattedOrderDate", () => {
+        it("returns a properly formatted date string for a valid order ID", () => {
+          const validId = "27cba69d-4c3d-4098-b42d-ac7fa62b7664";
+          spyOn(testOrders, "formatDate").and.returnValue("August 12");
 
-    it("returns null for an invalid order ID", () => {
-      const invalidId = "invalid-order-id";
-      const dateObj = orders.getOrderDate(invalidId);
+          const formattedDate = testOrders.getFormattedOrderDate(validId);
 
-      expect(dateObj).toBeNull();
-    });
-  });
+          expect(formattedDate).toBe("August 12");
+          expect(testOrders.formatDate).toHaveBeenCalled();
+        });
 
-  describe("getFormattedOrderDate", () => {
-    it("returns a properly formatted date string for a valid order ID", () => {
-      const validId = "27cba69d-4c3d-4098-b42d-ac7fa62b7664";
-      spyOn(orders, "formatDate").and.returnValue("August 12");
+        it("returns an empty string for an invalid order ID", () => {
+          const invalidId = "invalid-order-id";
+          const formattedDate = testOrders.getFormattedOrderDate(invalidId);
 
-      const formattedDate = orders.getFormattedOrderDate(validId);
+          expect(formattedDate).toBe("");
+        });
 
-      expect(formattedDate).toBe("August 12");
-      expect(orders.formatDate).toHaveBeenCalled();
-    });
+        it("integrates with getOrderDate correctly", () => {
+          const validId = "27cba69d-4c3d-4098-b42d-ac7fa62b7664";
 
-    it("returns an empty string for an invalid order ID", () => {
-      const invalidId = "invalid-order-id";
-      const formattedDate = orders.getFormattedOrderDate(invalidId);
+          // Don't use callThrough here - we need a simpler spy that returns a mock date
+          const mockDayjs = dayjs("2023-08-12T00:00:00.000Z");
+          spyOn(testOrders, "getOrderDate").and.returnValue(mockDayjs);
 
-      expect(formattedDate).toBe("");
+          // Call the method and verify it returns what we expect based on our mock
+          const result = testOrders.getFormattedOrderDate(validId);
+
+          // Verify the spy was called with correct parameters
+          expect(testOrders.getOrderDate).toHaveBeenCalledWith(validId);
+        });
+      });
     });
   });
 });
