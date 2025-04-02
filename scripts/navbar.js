@@ -6,9 +6,9 @@ let navbar = `<div class="amazon-header-left-section">
     </div>
     
     <div class="amazon-header-middle-section">
-      <input class="search-bar" type="text" placeholder="Search">
+      <input class="search-bar js-search-bar" type="text" placeholder="Search">
     
-      <button class="search-button">
+      <button class="search-button js-search-button">
         <img class="search-icon" src="images/icons/search-icon.png">
       </button>
     </div>
@@ -27,3 +27,33 @@ let navbar = `<div class="amazon-header-left-section">
     </div>`;
 
 document.querySelector(".js-amazon-header").innerHTML = navbar;
+
+// Search functionality that works across all pages
+function handleSearch() {
+  const searchTerm = document.querySelector(".js-search-bar").value.trim();
+  if (searchTerm) {
+    // Redirect to amazon.html with the search term as a URL parameter
+    window.location.href = `amazon.html?search=${encodeURIComponent(
+      searchTerm
+    )}`;
+  }
+}
+
+// Wait for DOM to be fully loaded to attach event listeners
+document.addEventListener("DOMContentLoaded", () => {
+  // Add click event listener to the search button
+  const searchButton = document.querySelector(".js-search-button");
+  if (searchButton) {
+    searchButton.addEventListener("click", handleSearch);
+  }
+
+  // Add keypress event listener to the search input (for Enter key)
+  const searchInput = document.querySelector(".js-search-bar");
+  if (searchInput) {
+    searchInput.addEventListener("keypress", (event) => {
+      if (event.key === "Enter") {
+        handleSearch();
+      }
+    });
+  }
+});
