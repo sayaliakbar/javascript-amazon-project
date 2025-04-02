@@ -55,7 +55,7 @@ describe("Checkout header functionality", () => {
       const link = document.querySelector(".return-to-home-link");
 
       expect(link).not.toBeNull();
-      expect(link.getAttribute("href")).toBe("amazon.html");
+      expect(link.getAttribute("href")).toBe("index.html");
     });
 
     it("updates the cart quantity in the header correctly", () => {
