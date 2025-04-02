@@ -6,6 +6,7 @@ export class Product {
   name;
   rating;
   priceCents;
+  keywords;
 
   constructor(productDetails) {
     this.id = productDetails.id;
@@ -16,6 +17,7 @@ export class Product {
       ? { ...productDetails.rating }
       : undefined;
     this.priceCents = productDetails.priceCents;
+    this.keywords = productDetails.keywords;
   }
 
   getPrice() {
@@ -65,7 +67,7 @@ export class Appliance extends Product {
   }
 }
 
-export const products = [
+export let products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
     image: "images/products/athletic-cotton-socks-6-pairs.jpg",
