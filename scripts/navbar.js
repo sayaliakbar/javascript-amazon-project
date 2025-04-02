@@ -1,5 +1,5 @@
 let navbar = `<div class="amazon-header-left-section">
-      <a href="amazon.html" class="header-link">
+      <a href="index.html" class="header-link">
         <img class="amazon-logo" src="images/amazon-logo-white.png">
         <img class="amazon-mobile-logo" src="images/amazon-mobile-logo-white.png">
       </a>
@@ -32,8 +32,8 @@ document.querySelector(".js-amazon-header").innerHTML = navbar;
 function handleSearch() {
   const searchTerm = document.querySelector(".js-search-bar").value.trim();
   if (searchTerm) {
-    // Redirect to amazon.html with the search term as a URL parameter
-    window.location.href = `amazon.html?search=${encodeURIComponent(
+    // Redirect to index.html with the search term as a URL parameter
+    window.location.href = `index.html?search=${encodeURIComponent(
       searchTerm
     )}`;
   }
