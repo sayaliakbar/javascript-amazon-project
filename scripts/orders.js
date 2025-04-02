@@ -9,16 +9,17 @@ import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 let orderList = "";
 
 orders.orderItems.forEach((item) => {
-  const date = dayjs(item.orderDate);
-  const formattedDate = date.format("MMMM D");
-  item.orderDate = formattedDate;
+  const orderTime = dayjs(item.orderDate);
+
+  console.log(orderTime);
+
   orderList += `<div class="order-container">
 
         <div class="order-header">
           <div class="order-header-left-section">
             <div class="order-date">
               <div class="order-header-label">Order Placed:</div>
-              <div>${item.orderDate}</div>
+              <div>${orderTime.format("MMMM D")}</div>
             </div>
             <div class="order-total">
               <div class="order-header-label">Total:</div>
