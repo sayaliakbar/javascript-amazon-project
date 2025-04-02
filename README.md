@@ -50,7 +50,7 @@ _Shopping cart functionality_
 
 3. Open the project in your preferred code editor
 
-4. Launch the application by opening `amazon.html` in your browser or using a local server
+4. Launch the application by opening `index.html` in your browser or using a local server
 
 ## Usage
 
@@ -91,7 +91,7 @@ javascript-amazon-project/
 │ └── tests.html # Test runner
 ├── images/ # Product images and icons
 │ └── screenshots/ # Project screenshots
-├── amazon.html # Main entry point
+├── index.html # Main entry point
 ├── checkout.html # Checkout page point
 ├── orders.html # Orders page point
 ├── tracking.html # Tracking page point
