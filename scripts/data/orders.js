@@ -31,8 +31,7 @@ export class Orders {
         this.orderItems = [];
       }
     } catch (error) {
-      console.error("Error loading orders from storage:", error);
-      // Default to empty array on error
+      // Default to empty array on error - removed console.error since this is handled gracefully
       this.orderItems = [];
     }
   }
