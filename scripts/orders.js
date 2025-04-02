@@ -11,8 +11,6 @@ let orderList = "";
 orders.orderItems.forEach((item) => {
   const orderTime = dayjs(item.orderDate);
 
-  console.log(orderTime);
-
   orderList += `<div class="order-container">
 
         <div class="order-header">
@@ -41,5 +39,13 @@ orders.orderItems.forEach((item) => {
 });
 
 document.querySelector(".js-orders-grid").innerHTML = orderList;
+console.log();
+document.querySelectorAll(".js-buy-again-button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const { productId } = button.dataset;
 
+    cart.addToCart(productId);
+    cart.updateCartQuantity();
+  });
+});
 cart.updateCartQuantity();
