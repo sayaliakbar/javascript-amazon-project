@@ -64,7 +64,7 @@ describe("Products functionality", () => {
         count: 87,
       });
       expect(product.priceCents).toEqual(1090);
-      expect(product.keywords).toEqual(undefined);
+      expect(product.keywords).toEqual(["socks", "sports", "apparel"]);
       expect(typeof product).toEqual("object");
       expect(product instanceof Product).toEqual(true);
       expect(product instanceof Clothing).toEqual(false);
@@ -118,7 +118,7 @@ describe("Products functionality", () => {
         count: 56,
       });
       expect(product.priceCents).toEqual(799);
-      expect(product.keywords).toEqual(undefined);
+      expect(product.keywords).toEqual(["socks", "sports", "apparel"]);
       expect(product instanceof Product).toEqual(true);
     });
 
