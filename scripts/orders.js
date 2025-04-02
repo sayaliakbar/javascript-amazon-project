@@ -1,5 +1,5 @@
 import "./navbar.js";
-import { cart } from "./data/cart-class.js";
+import { cart } from "./data/cart.js";
 import { orders } from "./data/orders.js";
 import { formatCurrency } from "../utils/money.js";
 import { orderItemsHTML } from "./orders/orderProducts.js";
