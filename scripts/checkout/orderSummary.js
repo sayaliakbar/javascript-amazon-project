@@ -8,6 +8,7 @@ import {
 } from "../data/deliveryOptions.js";
 import renderPaymentSummary from "./paymentSummary.js";
 import renderCheckoutHeader from "./checkoutHeader.js";
+import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 
 export function renderOrderSummary() {
   let cartSummaryHTML = "";
@@ -16,13 +17,13 @@ export function renderOrderSummary() {
     const { productId, deliveryOptionId } = cartItem;
     const matchingItem = getProduct(productId);
     const deliveryOption = getDeliveryOption(deliveryOptionId);
-    const dateString = calculateDeliveryDate(deliveryOption);
+    const deliveryDate = dayjs(calculateDeliveryDate(deliveryOption));
 
     cartSummaryHTML += `<div class="cart-item-container js-cart-item-container js-cart-item-container-${
       matchingItem.id
     }">
           <div class="delivery-date">
-            Delivery date: ${dateString}
+            Delivery date: ${deliveryDate.format("dddd, MMMM D")}
           </div>
 
           <div class="cart-item-details-grid">
@@ -83,7 +84,7 @@ export function renderOrderSummary() {
   function deliveryOptionsHTML(matchingItem, cartItem) {
     let html = "";
     deliveryOptions.forEach((deliveryOption) => {
-      const dateString = calculateDeliveryDate(deliveryOption);
+      const deliveryDate = dayjs(calculateDeliveryDate(deliveryOption));
 
       let priceString =
         deliveryOption.priceCents === 0
@@ -103,7 +104,7 @@ export function renderOrderSummary() {
       }-${deliveryOption.id}" name="delivery-option-${matchingItem.id}">
                 <div>
                   <div class="delivery-option-date">
-                    ${dateString}
+                    ${deliveryDate.format("dddd, MMMM D")}
                   </div>
                   <div class="delivery-option-price">
                     ${priceString} Shipping
