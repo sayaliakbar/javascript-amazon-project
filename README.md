@@ -109,7 +109,7 @@ javascript-amazon-project/
 
 ## Author
 
-[Ali Akbar]
+Ali Akbar
 
 - GitHub: [https://github.com/sayaliakbar](https://github.com/sayaliakbar)
 - LinkedIn: [https://www.linkedin.com/in/sayaliakbar](https://www.linkedin.com/in/sayaliakbar)
