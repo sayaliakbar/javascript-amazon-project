@@ -50,8 +50,6 @@ export function calculateDeliveryDate(deliveryOption, today = dayjs()) {
     deliveryDate = deliveryDate.add(1, "day");
   }
 
-  // Format and return the final date
-  const result = deliveryDate;
-
-  return result;
+  // Return the dayjs object directly
+  return deliveryDate;
 }
