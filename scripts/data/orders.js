@@ -113,4 +113,4 @@ export class Orders {
   }
 }
 
-export const orders = new Orders();
+export const orders = new Orders("orders");
