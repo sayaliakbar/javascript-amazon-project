@@ -52,8 +52,6 @@ if (matchingProduct && matchingOrder) {
 
   // Ensure progress is never negative (in case of early order date errors)
   deliveryProgress = Math.round(Math.max(0, deliveryProgress));
-
-  console.log(deliveryProgress);
 }
 
 // Ensure we have valid data before proceeding
